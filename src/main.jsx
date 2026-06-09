@@ -4,6 +4,7 @@ import { ConfigProvider } from 'antd';
 import arEG from 'antd/locale/ar_EG';
 import enUS from 'antd/locale/en_US';
 import App from './App';
+
 import { LangProvider, useLang } from './contexts/LangContext';
 import './index.css';
 

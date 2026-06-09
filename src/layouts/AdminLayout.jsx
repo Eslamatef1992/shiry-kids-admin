@@ -5,6 +5,7 @@ import {
   GiftOutlined, ShoppingCartOutlined, TagsOutlined, QrcodeOutlined,
   SettingOutlined, GlobalOutlined, FileTextOutlined, LogoutOutlined,
   SafetyOutlined, UsergroupAddOutlined, PercentageOutlined,
+  AppstoreOutlined, PictureOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
@@ -28,9 +29,13 @@ export default function AdminLayout() {
       { key: '/vendors', icon: <ShopOutlined />, label: t('vendors') },
     ]},
     { key: 'catalog-section', label: t('products'), type: 'group', children: [
+      { key: '/categories', icon: <AppstoreOutlined />, label: 'Categories' },
       { key: '/products', icon: <ShopOutlined />, label: t('products') },
       { key: '/coupons', icon: <GiftOutlined />, label: t('coupons') },
       { key: '/discount-coupons', icon: <PercentageOutlined />, label: t('discountCoupons') },
+    ]},
+    { key: 'content-section', label: 'Content', type: 'group', children: [
+      { key: '/banners', icon: <PictureOutlined />, label: 'Banners' },
     ]},
     { key: 'orders-section', label: t('orders'), type: 'group', children: [
       { key: '/orders', icon: <ShoppingCartOutlined />, label: t('orders') },
