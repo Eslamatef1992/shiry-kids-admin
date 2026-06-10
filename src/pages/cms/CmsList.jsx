@@ -53,15 +53,16 @@ export default function CmsList() {
       <Modal
         title={editing ? 'Edit Page' : 'New Page'}
         open={open} onCancel={() => setOpen(false)}
-        onOk={() => form.submit()} width={760}
+        onOk={() => form.submit()} width={900}
         okButtonProps={{ style: { background: '#FF383C' } }}
+        styles={{ body: { maxHeight: '75vh', overflowY: 'auto', paddingRight: 8 } }}
       >
         <Form form={form} layout="vertical" onFinish={save}>
           <BilingualField nameEn="title" nameAr="title_ar" label="Page Title" required />
           <Form.Item name="slug" label="Slug (URL key)" rules={[{ required: true }]}>
-            <Input placeholder="about-us" />
+            <Input placeholder="about-us" disabled={!!editing} />
           </Form.Item>
-          <BilingualField nameEn="content" nameAr="content_ar" label="Content" textarea rows={10} />
+          <BilingualField nameEn="content" nameAr="content_ar" label="Content" richtext />
           <Form.Item name="status" label={t('status')}>
             <Select options={[{ value: 'published', label: 'Published' }, { value: 'draft', label: 'Draft' }]} />
           </Form.Item>
