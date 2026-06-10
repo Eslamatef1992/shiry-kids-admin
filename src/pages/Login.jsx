@@ -1,28 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+
+const MAROON = '#8B1A1A';
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [loading, setLoading] = React.useState(false);
-  const logoRef = useRef(null);
-
-  // Logo bounce-in animation on mount
-  useEffect(() => {
-    const el = logoRef.current;
-    if (!el) return;
-    el.animate(
-      [
-        { opacity: 0, transform: 'scale(0.4) translateY(-20px)' },
-        { opacity: 1, transform: 'scale(1.08) translateY(0px)' },
-        { opacity: 1, transform: 'scale(1) translateY(0px)' },
-      ],
-      { duration: 700, easing: 'cubic-bezier(0.34,1.56,0.64,1)', fill: 'forwards' }
-    );
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -37,68 +24,103 @@ export default function Login() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#f5f5f5',
-    }}>
-      <Card style={{ width: 400, borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
-        {/* Logo + title */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <img
-            ref={logoRef}
-            src="/logo.png"
-            alt="Shiry Kids"
-            style={{ width: 110, marginBottom: 12, opacity: 0 }}
-          />
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#FF383C', margin: 0 }}>
-            Shiry Kids Admin
-          </h1>
-          <p style={{ color: '#888', marginTop: 6, fontSize: 13 }}>
-            Sign in to your dashboard
-          </p>
-        </div>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        gap: 80,
+        padding: '40px 24px',
+        background:
+          'radial-gradient(ellipse 900px 700px at 78% 45%, #fbe3df 0%, #fdf2f0 45%, #ffffff 75%)',
+      }}
+    >
+      {/* Left: branding */}
+      <div style={{ maxWidth: 420 }}>
+        <img src="/logo.png" alt="Shiry Kids" style={{ width: 110, marginBottom: 24 }} />
+        <h1 style={{ fontSize: 36, fontWeight: 800, color: '#1a1a1a', margin: '0 0 16px' }}>
+          Shiry Kids Fun
+        </h1>
+        <p style={{ fontSize: 16, color: '#888', lineHeight: 1.6, margin: 0 }}>
+          A comprehensive dashboard for managing coupons and products, and tracking orders
+          efficiently and easily.
+        </p>
+      </div>
 
-        <Form form={form} onFinish={onFinish} layout="vertical" size="large">
-          <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email' }]}>
-            <Input placeholder="admin@sherykids.com" />
-          </Form.Item>
-          <Form.Item name="password" label="Password" rules={[{ required: true }]}>
-            <Input.Password placeholder="••••••••" />
-          </Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            block
-            style={{ background: '#FF383C', height: 48, fontWeight: 700, borderColor: '#FF383C' }}
-          >
-            Sign In
-          </Button>
-        </Form>
-      </Card>
-
-      {/* Powered by */}
-      <div style={{ marginTop: 24, textAlign: 'center' }}>
-        <span style={{ fontSize: 12, color: '#aaa' }}>Powered by </span>
-        <a
-          href="https://teknulugy.com"
-          target="_blank"
-          rel="noreferrer"
+      {/* Right: login card */}
+      <div style={{ width: '100%', maxWidth: 480 }}>
+        <div
           style={{
-            fontSize: 13,
-            fontWeight: 700,
-            color: '#FF383C',
-            textDecoration: 'none',
-            borderBottom: '1.5px solid #FF383C',
-            paddingBottom: 1,
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 8px 40px rgba(0,0,0,0.06)',
+            padding: '40px 48px',
           }}
         >
-          teknulugy
-        </a>
+          <h2
+            style={{
+              textAlign: 'center',
+              fontSize: 22,
+              fontWeight: 800,
+              letterSpacing: 1,
+              color: MAROON,
+              margin: '0 0 16px',
+              textTransform: 'uppercase',
+            }}
+          >
+            Shiry Kids Admin Panel
+          </h2>
+          <div style={{ borderBottom: '1px solid #eee', marginBottom: 28 }} />
+
+          <Form form={form} onFinish={onFinish} layout="vertical" size="large" requiredMark={false}>
+            <Form.Item
+              name="email"
+              label={<span style={{ fontWeight: 700, color: '#222' }}>Email</span>}
+              rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
+            >
+              <Input placeholder="example@gmail.com" style={{ borderRadius: 8, height: 48 }} />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label={<span style={{ fontWeight: 700, color: '#222' }}>Password</span>}
+              rules={[{ required: true, message: 'Please enter your password' }]}
+            >
+              <Input.Password placeholder="••••••••" style={{ borderRadius: 8, height: 48 }} />
+            </Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              style={{
+                background: MAROON,
+                borderColor: MAROON,
+                height: 50,
+                fontWeight: 700,
+                fontSize: 16,
+                borderRadius: 8,
+                marginTop: 8,
+              }}
+            >
+              Login
+            </Button>
+          </Form>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: '#999' }}>
+          All Rights Reserved By{' '}
+          <a
+            href="https://teknulugy.com"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#999', fontWeight: 700, textDecoration: 'underline' }}
+          >
+            Teknulugy Company
+          </a>{' '}
+          @{new Date().getFullYear()}
+        </div>
       </div>
     </div>
   );
