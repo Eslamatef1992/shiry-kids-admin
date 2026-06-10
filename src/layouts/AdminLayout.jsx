@@ -1,16 +1,19 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, Avatar, Dropdown, Button, Tooltip } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Button, Tooltip, Input, Badge, ConfigProvider } from 'antd';
 import {
   DashboardOutlined, UserOutlined, TeamOutlined, ShopOutlined,
   GiftOutlined, ShoppingCartOutlined, TagsOutlined, QrcodeOutlined,
   SettingOutlined, GlobalOutlined, FileTextOutlined, LogoutOutlined,
   SafetyOutlined, UsergroupAddOutlined, PercentageOutlined,
-  AppstoreOutlined, PictureOutlined,
+  AppstoreOutlined, PictureOutlined, BellOutlined, SearchOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
 
 const { Sider, Header, Content } = Layout;
+
+const SIDER_BG = '#1A1A2E';
+const PRIMARY = '#FF383C';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -60,45 +63,79 @@ export default function AdminLayout() {
     <Layout style={{ minHeight: '100vh' }} direction={isRtl ? 'rtl' : 'ltr'}>
       <Sider
         width={240}
-        style={{ background: '#fff', borderRight: isRtl ? 'none' : '1px solid #f0f0f0', borderLeft: isRtl ? '1px solid #f0f0f0' : 'none' }}
+        style={{ background: SIDER_BG }}
         breakpoint="lg"
         collapsedWidth={60}
       >
-        <div className="logo" style={{ direction: 'ltr' }}>🎀 Shiry Kids</div>
-        <Menu
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-          onClick={({ key }) => navigate(key)}
-          style={{ borderRight: 0, fontSize: 13 }}
-        />
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          padding: '20px 20px 16px', direction: 'ltr',
+        }}>
+          <img src="/logo.png" alt="Shiry Kids" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: 8 }} />
+          <div>
+            <div style={{ color: '#fff', fontSize: 17, fontWeight: 800, lineHeight: 1.1 }}>Shiry Kids</div>
+            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11, marginTop: 2 }}>Admin Panel</div>
+          </div>
+        </div>
+        <ConfigProvider theme={{ components: { Menu: {
+          darkItemBg: SIDER_BG,
+          darkItemSelectedBg: PRIMARY,
+          darkItemSelectedColor: '#fff',
+          darkItemHoverBg: 'rgba(255,56,60,0.15)',
+          darkItemColor: 'rgba(255,255,255,0.65)',
+          darkGroupTitleColor: 'rgba(255,255,255,0.35)',
+          itemBorderRadius: 10,
+          itemMarginInline: 12,
+        } } }}>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={menuItems}
+            onClick={({ key }) => navigate(key)}
+            style={{ borderRight: 0, fontSize: 13, background: 'transparent' }}
+          />
+        </ConfigProvider>
       </Sider>
       <Layout>
         <Header style={{
           background: '#fff', padding: '0 24px',
           display: 'flex', alignItems: 'center',
-          justifyContent: 'flex-end', gap: 16,
+          justifyContent: 'space-between', gap: 16,
           borderBottom: '1px solid #f0f0f0',
         }}>
-          {/* Language toggle */}
-          <Tooltip title={lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}>
-            <Button
-              onClick={toggle}
-              style={{ fontWeight: 700, minWidth: 48 }}
-              size="small"
-            >
-              {lang === 'en' ? 'ع' : 'EN'}
-            </Button>
-          </Tooltip>
+          <Input
+            prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+            placeholder="Search anything.."
+            style={{ maxWidth: 360, borderRadius: 10, background: '#f5f5f7' }}
+            variant="filled"
+          />
 
-          <Dropdown menu={userMenu}>
-            <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Avatar style={{ background: '#FF383C' }}>{admin?.name?.[0]}</Avatar>
-              <span style={{ fontSize: 14, fontWeight: 600 }}>{admin?.name}</span>
-            </div>
-          </Dropdown>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Language toggle */}
+            <Tooltip title={lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}>
+              <Button
+                onClick={toggle}
+                style={{ fontWeight: 700, minWidth: 48 }}
+                size="small"
+              >
+                {lang === 'en' ? 'ع' : 'EN'}
+              </Button>
+            </Tooltip>
+
+            <Badge count={0} size="small">
+              <Button shape="circle" icon={<BellOutlined />} />
+            </Badge>
+
+            <Dropdown menu={userMenu}>
+              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Avatar style={{ background: PRIMARY }}>{admin?.name?.[0]}</Avatar>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>{admin?.name}</span>
+              </div>
+            </Dropdown>
+          </div>
         </Header>
-        <Content style={{ padding: 24, background: '#f5f5f5' }}>
+        <Content style={{ padding: 24, background: '#f5f6fa' }}>
           <Outlet />
         </Content>
       </Layout>
