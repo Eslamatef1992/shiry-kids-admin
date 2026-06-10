@@ -18,6 +18,7 @@ import SeoList from './pages/seo/SeoList';
 import CmsList from './pages/cms/CmsList';
 import CategoryList from './pages/categories/CategoryList';
 import BannerList from './pages/banners/BannerList';
+import AdList from './pages/ads/AdList';
 
 const Protected = ({ children }) => {
   const { admin, loading } = useAuth();
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="vendors" element={<VendorList />} />
             <Route path="categories" element={<CategoryList />} />
             <Route path="banners" element={<BannerList />} />
+            <Route path="ads" element={<AdList />} />
             <Route path="products" element={<ProductList />} />
             <Route path="coupons" element={<CouponList />} />
             <Route path="orders" element={<OrderList />} />

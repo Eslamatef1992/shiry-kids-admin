@@ -39,6 +39,7 @@ export default function AdminLayout() {
     ]},
     { key: 'content-section', label: 'Content', type: 'group', children: [
       { key: '/banners', icon: <PictureOutlined />, label: 'Banners' },
+      { key: '/ads', icon: <BellOutlined />, label: 'Ads' },
     ]},
     { key: 'orders-section', label: t('orders'), type: 'group', children: [
       { key: '/orders', icon: <ShoppingCartOutlined />, label: t('orders') },
