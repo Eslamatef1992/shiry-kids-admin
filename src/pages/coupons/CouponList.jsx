@@ -97,7 +97,7 @@ export default function CouponList() {
     { title: t('price'), dataIndex: 'price', render: p => `${p} KD` },
     { title: 'Original', dataIndex: 'original_price', render: p => p ? `${p} KD` : '—' },
     { title: 'Discount', dataIndex: 'discount_percent', render: v => `${v}%` },
-    { title: 'Count', dataIndex: 'coupon_count' },
+    { title: 'Quantity', dataIndex: 'coupon_count' },
     { title: t('status'), dataIndex: 'status', render: s => <Tag color={s === 'active' ? 'green' : s === 'expired' ? 'red' : 'orange'}>{s}</Tag> },
     { title: 'Best Seller', dataIndex: 'featured', render: v => <Tag color={v ? 'gold' : 'default'}>{v ? t('yes') : t('no')}</Tag> },
     {
@@ -163,7 +163,7 @@ export default function CouponList() {
             <Form.Item name="discount_percent" label="Discount %">
               <InputNumber min={0} max={100} style={{ width: 100 }} />
             </Form.Item>
-            <Form.Item name="coupon_count" label="Count">
+            <Form.Item name="coupon_count" label="Quantity">
               <InputNumber min={1} style={{ width: 80 }} />
             </Form.Item>
           </Space>
