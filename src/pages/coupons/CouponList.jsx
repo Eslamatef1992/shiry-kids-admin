@@ -141,6 +141,7 @@ export default function CouponList() {
 
           <BilingualField nameEn="title" nameAr="title_ar" label="Title" required />
           <BilingualField nameEn="description" nameAr="description_ar" label={t('description')} textarea rows={2} />
+          <BilingualField nameEn="terms_and_conditions" nameAr="terms_and_conditions_ar" label="Terms & Conditions" textarea rows={3} />
 
           <Form.Item label="Coupon Image">
             <Upload
