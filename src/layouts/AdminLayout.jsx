@@ -6,7 +6,7 @@ import {
   SettingOutlined, GlobalOutlined, FileTextOutlined, LogoutOutlined,
   SafetyOutlined, UsergroupAddOutlined, PercentageOutlined,
   AppstoreOutlined, PictureOutlined, BellOutlined, SearchOutlined,
-  NotificationOutlined,
+  NotificationOutlined, LayoutOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
@@ -42,6 +42,7 @@ export default function AdminLayout() {
       { key: '/banners', icon: <PictureOutlined />, label: 'Banners' },
       { key: '/ads', icon: <BellOutlined />, label: 'Ads' },
       { key: '/notifications', icon: <NotificationOutlined />, label: 'Notifications' },
+      { key: '/landing-page', icon: <LayoutOutlined />, label: 'Landing Page' },
     ]},
     { key: 'orders-section', label: t('orders'), type: 'group', children: [
       { key: '/orders', icon: <ShoppingCartOutlined />, label: t('orders') },

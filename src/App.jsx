@@ -20,6 +20,7 @@ import CategoryList from './pages/categories/CategoryList';
 import BannerList from './pages/banners/BannerList';
 import AdList from './pages/ads/AdList';
 import NotificationList from './pages/notifications/NotificationList';
+import LandingPage from './pages/landingPage/LandingPage';
 
 const Protected = ({ children }) => {
   const { admin, loading } = useAuth();
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="seo" element={<SeoList />} />
             <Route path="cms" element={<CmsList />} />
             <Route path="notifications" element={<NotificationList />} />
+            <Route path="landing-page" element={<LandingPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
