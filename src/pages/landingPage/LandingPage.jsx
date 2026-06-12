@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs } from 'antd';
 import SectionForm from './components/SectionForm';
 import ItemsManager from './components/ItemsManager';
+import CmsPageForm from './components/CmsPageForm';
 
 const HERO_FIELDS = [
   { type: 'bilingual', name: 'title', nameAr: 'title_ar', label: 'Hero Title', required: true },
@@ -73,6 +74,8 @@ export default function LandingPage() {
     },
     { key: 'download_app', label: 'Download App', children: <SectionForm sectionKey="download_app" fields={DOWNLOAD_FIELDS} /> },
     { key: 'footer', label: 'Footer & Social', children: <SectionForm sectionKey="footer" fields={FOOTER_FIELDS} /> },
+    { key: 'privacy_policy', label: 'Privacy Policy', children: <CmsPageForm slug="privacy-policy" /> },
+    { key: 'terms_conditions', label: 'Terms & Conditions', children: <CmsPageForm slug="terms-conditions" /> },
   ];
 
   return (
