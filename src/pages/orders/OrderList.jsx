@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Tag, Select, Space, Button, Modal, Descriptions, message } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, PrinterOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
+import { printOrder } from '../../utils/printOrder';
 
 const STATUS_COLOR = { processing:'blue', shipped:'orange', arrived:'green', cancelled:'red' };
 const PAY_COLOR    = { paid:'green', pending:'orange', failed:'red', refunded:'purple' };
@@ -30,8 +31,13 @@ export default function OrderList() {
         onChange={v => updateStatus(r.id,'order_status',v)}
         options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
     )},
-    { title: 'Date', dataIndex: 'created_at', render: d => new Date(d).toLocaleDateString() },
-    { title: '', render: (_, r) => <Button icon={<EyeOutlined />} size="small" onClick={() => setSelected(r)} /> },
+    { title: 'Date', dataIndex: 'createdAt', render: d => d ? new Date(d).toLocaleString() : '-' },
+    { title: '', render: (_, r) => (
+      <Space>
+        <Button icon={<EyeOutlined />} size="small" onClick={() => setSelected(r)} />
+        <Button icon={<PrinterOutlined />} size="small" onClick={() => printOrder(r)} />
+      </Space>
+    ) },
   ];
 
   return (

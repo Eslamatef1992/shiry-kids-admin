@@ -20,7 +20,7 @@ export default function UserList() {
     { title: 'Email', dataIndex: 'email' },
     { title: 'Phone', dataIndex: 'phone' },
     { title: 'Status', dataIndex: 'status', render: s => <Tag color={s==='active'?'green':s==='banned'?'red':'orange'}>{s}</Tag> },
-    { title: 'Joined', dataIndex: 'created_at', render: d => new Date(d).toLocaleDateString() },
+    { title: 'Joined', dataIndex: 'createdAt', render: d => d ? new Date(d).toLocaleDateString() : '-' },
     { title: 'Actions', render: (_, r) => (
       <Space>
         {r.status !== 'banned' && <Button size="small" danger onClick={() => updateStatus(r.id,'banned')}>Ban</Button>}
