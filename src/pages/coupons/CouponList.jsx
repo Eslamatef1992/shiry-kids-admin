@@ -98,6 +98,7 @@ export default function CouponList() {
     { title: 'Original', dataIndex: 'original_price', render: p => p ? `${p} KD` : '—' },
     { title: 'Discount', dataIndex: 'discount_percent', render: v => `${v}%` },
     { title: 'Quantity', dataIndex: 'coupon_count' },
+    { title: 'Category', dataIndex: 'category', render: c => c ? <Tag>{c === 'birthday' ? 'Birthday' : c === 'mothers_day' ? "Mother's Day" : c}</Tag> : '—' },
     { title: t('status'), dataIndex: 'status', render: s => <Tag color={s === 'active' ? 'green' : s === 'expired' ? 'red' : 'orange'}>{s}</Tag> },
     { title: 'Best Seller', dataIndex: 'featured', render: v => <Tag color={v ? 'gold' : 'default'}>{v ? t('yes') : t('no')}</Tag> },
     {
@@ -180,6 +181,12 @@ export default function CouponList() {
                 { value: 'active', label: t('active') },
                 { value: 'inactive', label: t('inactive') },
                 { value: 'expired', label: 'Expired' },
+              ]} />
+            </Form.Item>
+            <Form.Item name="category" label="Category">
+              <Select style={{ width: 160 }} allowClear placeholder="None" options={[
+                { value: 'birthday', label: 'Birthday' },
+                { value: 'mothers_day', label: "Mother's Day" },
               ]} />
             </Form.Item>
             <Form.Item name="featured" label="Best Seller Coupon" valuePropName="checked">
