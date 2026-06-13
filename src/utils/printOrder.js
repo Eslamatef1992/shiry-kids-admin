@@ -14,8 +14,12 @@ export function printOrder(order, { guest = false } = {}) {
   `).join('');
 
   const customerName = guest ? order.name : (order.user?.name || '-');
+  const customerEmail = guest ? '' : (order.user?.email || '');
+  const customerPhone = guest ? order.phone : (order.user?.phone || '');
+  const customerAddress = guest ? order.address : (order.user?.address || '');
   const date = order.createdAt ? new Date(order.createdAt).toLocaleString() : '-';
   const discount = Number(order.discount || 0);
+  const logoUrl = `${window.location.origin}/logo.png`;
 
   win.document.write(`
     <!DOCTYPE html>
@@ -25,7 +29,9 @@ export function printOrder(order, { guest = false } = {}) {
         <meta charset="utf-8" />
         <style>
           body { font-family: Arial, Helvetica, sans-serif; padding: 32px; color: #333; }
-          h1 { font-size: 20px; color: #FF383C; margin: 0 0 4px; }
+          .header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+          .header img { width: 40px; height: 40px; object-fit: contain; border-radius: 8px; }
+          h1 { font-size: 20px; color: #FF383C; margin: 0; }
           .meta { margin-bottom: 16px; font-size: 13px; color: #555; }
           .meta div { margin-bottom: 2px; }
           table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
@@ -39,11 +45,16 @@ export function printOrder(order, { guest = false } = {}) {
         </style>
       </head>
       <body>
-        <h1>Shiry Kids</h1>
+        <div class="header">
+          <img src="${logoUrl}" alt="Shiry Kids" onerror="this.style.display='none'" />
+          <h1>Shiry Kids</h1>
+        </div>
         <div class="meta">
           <div><strong>Order #</strong> ${order.order_number}</div>
           <div><strong>Customer:</strong> ${customerName}</div>
-          ${guest ? `<div><strong>Phone:</strong> ${order.phone || '-'}</div><div><strong>Address:</strong> ${order.address || '-'}</div>` : ''}
+          ${customerEmail ? `<div><strong>Email:</strong> ${customerEmail}</div>` : ''}
+          <div><strong>Phone:</strong> ${customerPhone || '-'}</div>
+          <div><strong>Address:</strong> ${customerAddress || '-'}</div>
           <div><strong>Date:</strong> ${date}</div>
           <div><strong>Payment:</strong> ${(order.payment_method || '').toUpperCase()} (${order.payment_status})</div>
           <div><strong>Order Status:</strong> ${order.order_status}</div>

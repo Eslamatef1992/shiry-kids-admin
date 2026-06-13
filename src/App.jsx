@@ -21,6 +21,7 @@ import BannerList from './pages/banners/BannerList';
 import AdList from './pages/ads/AdList';
 import NotificationList from './pages/notifications/NotificationList';
 import LandingPage from './pages/landingPage/LandingPage';
+import QrGenerator from './pages/qrGenerator/QrGenerator';
 
 const Protected = ({ children }) => {
   const { admin, loading } = useAuth();
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="guest-orders" element={<GuestOrderList />} />
             <Route path="discount-coupons" element={<DiscountCouponList />} />
             <Route path="qr-scanner" element={<QRScannerLog />} />
+            <Route path="qr-generator" element={<QrGenerator />} />
             <Route path="settings" element={<Settings />} />
             <Route path="seo" element={<SeoList />} />
             <Route path="cms" element={<CmsList />} />

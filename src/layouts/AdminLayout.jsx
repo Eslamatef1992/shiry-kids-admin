@@ -50,6 +50,7 @@ export default function AdminLayout() {
     ]},
     { key: 'scanner-section', label: 'Mobile', type: 'group', children: [
       { key: '/qr-scanner', icon: <QrcodeOutlined />, label: t('qrScanner') },
+      { key: '/qr-generator', icon: <QrcodeOutlined />, label: 'QR Generator' },
     ]},
     { key: 'system-section', label: 'System', type: 'group', children: [
       { key: '/settings', icon: <SettingOutlined />, label: t('settings') },
