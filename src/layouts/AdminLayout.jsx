@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
+import { canAccess } from '../utils/permissions';
 
 const { Sider, Header, Content } = Layout;
 
@@ -22,7 +23,7 @@ export default function AdminLayout() {
   const { admin, logout } = useAuth();
   const { t, lang, toggle, isRtl } = useLang();
 
-  const menuItems = [
+  const rawMenuItems = [
     { key: '/', icon: <DashboardOutlined />, label: t('dashboard') },
     { key: 'admin-section', label: t('admins'), type: 'group', children: [
       { key: '/admins', icon: <SafetyOutlined />, label: t('admins') },
@@ -58,6 +59,19 @@ export default function AdminLayout() {
       { key: '/cms', icon: <FileTextOutlined />, label: t('cms') },
     ]},
   ];
+
+  // Hide sidebar entries (and whole groups) the current admin's role isn't
+  // permitted to access. Mirrors the backend route guards.
+  const menuItems = rawMenuItems
+    .map((item) => {
+      if (item.children) {
+        const children = item.children.filter((c) => canAccess(admin, c.key));
+        if (children.length === 0) return null;
+        return { ...item, children };
+      }
+      return canAccess(admin, item.key) ? item : null;
+    })
+    .filter(Boolean);
 
   const userMenu = {
     items: [{ key: 'logout', icon: <LogoutOutlined />, label: t('logout'), danger: true }],

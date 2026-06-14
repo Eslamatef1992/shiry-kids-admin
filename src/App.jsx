@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { canAccess } from './utils/permissions';
 import AdminLayout from './layouts/AdminLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -29,6 +30,23 @@ const Protected = ({ children }) => {
   return admin ? children : <Navigate to="/login" replace />;
 };
 
+// Blocks access to a route's element unless the logged-in admin's role
+// permissions allow the current path (see src/utils/permissions.js).
+// Mirrors the backend's per-route permission guards.
+const RequirePermission = ({ children }) => {
+  const { admin } = useAuth();
+  const location = useLocation();
+  if (!canAccess(admin, location.pathname)) {
+    return (
+      <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+        <h2 style={{ fontWeight: 800 }}>Access Denied</h2>
+        <p style={{ color: '#999' }}>You don't have permission to view this page.</p>
+      </div>
+    );
+  }
+  return children;
+};
+
 export default function App() {
   return (
     <AuthProvider>
@@ -37,25 +55,25 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Protected><AdminLayout /></Protected>}>
             <Route index element={<Dashboard />} />
-            <Route path="admins" element={<AdminList />} />
-            <Route path="roles" element={<RoleList />} />
-            <Route path="users" element={<UserList />} />
-            <Route path="vendors" element={<VendorList />} />
-            <Route path="categories" element={<CategoryList />} />
-            <Route path="banners" element={<BannerList />} />
-            <Route path="ads" element={<AdList />} />
-            <Route path="products" element={<ProductList />} />
-            <Route path="coupons" element={<CouponList />} />
-            <Route path="orders" element={<OrderList />} />
-            <Route path="guest-orders" element={<GuestOrderList />} />
-            <Route path="discount-coupons" element={<DiscountCouponList />} />
-            <Route path="qr-scanner" element={<QRScannerLog />} />
-            <Route path="qr-generator" element={<QrGenerator />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="seo" element={<SeoList />} />
-            <Route path="cms" element={<CmsList />} />
-            <Route path="notifications" element={<NotificationList />} />
-            <Route path="landing-page" element={<LandingPage />} />
+            <Route path="admins" element={<RequirePermission><AdminList /></RequirePermission>} />
+            <Route path="roles" element={<RequirePermission><RoleList /></RequirePermission>} />
+            <Route path="users" element={<RequirePermission><UserList /></RequirePermission>} />
+            <Route path="vendors" element={<RequirePermission><VendorList /></RequirePermission>} />
+            <Route path="categories" element={<RequirePermission><CategoryList /></RequirePermission>} />
+            <Route path="banners" element={<RequirePermission><BannerList /></RequirePermission>} />
+            <Route path="ads" element={<RequirePermission><AdList /></RequirePermission>} />
+            <Route path="products" element={<RequirePermission><ProductList /></RequirePermission>} />
+            <Route path="coupons" element={<RequirePermission><CouponList /></RequirePermission>} />
+            <Route path="orders" element={<RequirePermission><OrderList /></RequirePermission>} />
+            <Route path="guest-orders" element={<RequirePermission><GuestOrderList /></RequirePermission>} />
+            <Route path="discount-coupons" element={<RequirePermission><DiscountCouponList /></RequirePermission>} />
+            <Route path="qr-scanner" element={<RequirePermission><QRScannerLog /></RequirePermission>} />
+            <Route path="qr-generator" element={<RequirePermission><QrGenerator /></RequirePermission>} />
+            <Route path="settings" element={<RequirePermission><Settings /></RequirePermission>} />
+            <Route path="seo" element={<RequirePermission><SeoList /></RequirePermission>} />
+            <Route path="cms" element={<RequirePermission><CmsList /></RequirePermission>} />
+            <Route path="notifications" element={<RequirePermission><NotificationList /></RequirePermission>} />
+            <Route path="landing-page" element={<RequirePermission><LandingPage /></RequirePermission>} />
           </Route>
         </Routes>
       </BrowserRouter>
