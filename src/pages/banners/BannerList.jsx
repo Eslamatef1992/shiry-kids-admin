@@ -70,7 +70,7 @@ export default function BannerList() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontWeight: 800 }}>Banners</h2>
+        <h2 style={{ fontWeight: 800 }}>{t('banners')}</h2>
         <Button type="primary" icon={<PlusOutlined />} style={{ background: '#FF383C' }}
           onClick={() => { setEditing(null); form.resetFields(); setFileList([]); setOpen(true); }}>
           Add Banner
@@ -92,7 +92,7 @@ export default function BannerList() {
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Upload Image</Button>
+              <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
           <Form.Item name="link" label="Link (optional)">

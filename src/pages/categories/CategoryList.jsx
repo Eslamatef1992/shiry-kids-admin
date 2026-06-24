@@ -63,7 +63,7 @@ export default function CategoryList() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontWeight: 800 }}>Categories</h2>
+        <h2 style={{ fontWeight: 800 }}>{t('categories')}</h2>
         <Button type="primary" icon={<PlusOutlined />} style={{ background: '#FF383C' }}
           onClick={() => { setEditing(null); form.resetFields(); setFileList([]); setOpen(true); }}>
           Add Category
@@ -85,7 +85,7 @@ export default function CategoryList() {
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Upload Image</Button>
+              <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
           <Form.Item name="sort" label="Sort Order">

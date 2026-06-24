@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLang } from '../contexts/LangContext';
 
 const MAROON = '#8B1A1A';
 
 export default function Login() {
+  const { t } = useLang();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -77,14 +79,14 @@ export default function Login() {
           <Form form={form} onFinish={onFinish} layout="vertical" size="large" requiredMark={false}>
             <Form.Item
               name="email"
-              label={<span style={{ fontWeight: 700, color: '#222' }}>Email</span>}
+              label={<span style={{ fontWeight: 700, color: '#222' }}>{t('email')}</span>}
               rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
             >
               <Input placeholder="example@gmail.com" style={{ borderRadius: 8, height: 48 }} />
             </Form.Item>
             <Form.Item
               name="password"
-              label={<span style={{ fontWeight: 700, color: '#222' }}>Password</span>}
+              label={<span style={{ fontWeight: 700, color: '#222' }}>{t('password')}</span>}
               rules={[{ required: true, message: 'Please enter your password' }]}
             >
               <Input.Password placeholder="••••••••" style={{ borderRadius: 8, height: 48 }} />

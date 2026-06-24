@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, Select, Space, Popconfirm, Tag, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
+import { useLang } from '../../contexts/LangContext';
 
 export default function AdminList() {
+  const { t } = useLang();
   const [data, setData] = useState([]);
   const [roles, setRoles] = useState([]);
   const [open, setOpen] = useState(false);
@@ -30,11 +32,11 @@ export default function AdminList() {
   };
 
   const cols = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Role', render: r => <Tag color="blue">{r.role?.name}</Tag> },
-    { title: 'Status', dataIndex: 'status', render: s => <Tag color={s==='active'?'green':'red'}>{s}</Tag> },
-    { title: 'Actions', render: (_, r) => (
+    { title: t('name'), dataIndex: 'name', key: 'name' },
+    { title: t('email'), dataIndex: 'email', key: 'email' },
+    { title: t('roles'), render: r => <Tag color="blue">{r.role?.name}</Tag> },
+    { title: t('status'), dataIndex: 'status', render: s => <Tag color={s==='active'?'green':'red'}>{s}</Tag> },
+    { title: t('actions'), render: (_, r) => (
       <Space>
         <Button icon={<EditOutlined />} size="small" onClick={() => { setEditing(r); form.setFieldsValue({ ...r, password: '' }); setOpen(true); }} />
         <Popconfirm title="Delete?" onConfirm={() => remove(r.id)}>
@@ -47,9 +49,9 @@ export default function AdminList() {
   return (
     <div>
       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:16 }}>
-        <h2 style={{ fontWeight:800 }}>Admins</h2>
+        <h2 style={{ fontWeight:800 }}>{t('admins')}</h2>
         <Button type="primary" icon={<PlusOutlined />} style={{ background:'#FF383C' }}
-          onClick={() => { setEditing(null); form.resetFields(); setOpen(true); }}>Add Admin</Button>
+          onClick={() => { setEditing(null); form.resetFields(); setOpen(true); }}>{t('addAdmin')}</Button>
       </div>
       <Table dataSource={data} columns={cols} rowKey="id" />
       <Modal title={editing ? 'Edit Admin' : 'New Admin'} open={open} onCancel={() => setOpen(false)} onOk={() => form.submit()} okButtonProps={{ style: { background:'#FF383C' } }}>

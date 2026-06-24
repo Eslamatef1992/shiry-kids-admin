@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import SectionForm from './components/SectionForm';
 import ItemsManager from './components/ItemsManager';
 import CmsPageForm from './components/CmsPageForm';
+import { useLang } from '../../contexts/LangContext';
 
 const HERO_FIELDS = [
   { type: 'bilingual', name: 'title', nameAr: 'title_ar', label: 'Hero Title', required: true },
@@ -45,6 +46,7 @@ const FOOTER_FIELDS = [
 ];
 
 export default function LandingPage() {
+  const { t } = useLang();
   const items = [
     { key: 'hero', label: 'Hero', children: <SectionForm sectionKey="hero" fields={HERO_FIELDS} /> },
     { key: 'about', label: 'About', children: <SectionForm sectionKey="about" fields={ABOUT_FIELDS} /> },
@@ -52,7 +54,7 @@ export default function LandingPage() {
       key: 'about2', label: 'About (Gallery)', children: (
         <div>
           <SectionForm sectionKey="about2" fields={ABOUT2_FIELDS} />
-          <h3 style={{ margin: '24px 0 12px', fontWeight: 700 }}>Gallery Images</h3>
+          <h3 style={{ margin: '24px 0 12px', fontWeight: 700 }}>{t('galleryImages')}</h3>
           <ItemsManager section="about_gallery" addLabel="Image" imageLabel="Image" showTitle={false} />
         </div>
       ),
@@ -80,7 +82,7 @@ export default function LandingPage() {
 
   return (
     <div>
-      <h2 style={{ fontWeight: 800, marginBottom: 24 }}>Landing Page</h2>
+      <h2 style={{ fontWeight: 800, marginBottom: 24 }}>{t('landingPage')}</h2>
       <Tabs items={items} type="card" />
     </div>
   );

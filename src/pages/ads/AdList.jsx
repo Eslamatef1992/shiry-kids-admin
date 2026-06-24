@@ -104,7 +104,7 @@ export default function AdList() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontWeight: 800 }}>Ads</h2>
+        <h2 style={{ fontWeight: 800 }}>{t('ads')}</h2>
         <Button type="primary" icon={<PlusOutlined />} style={{ background: '#FF383C' }}
           onClick={() => { setEditing(null); form.resetFields(); form.setFieldsValue({ link_type: 'none', status: 'active', sort: 0 }); setFileList([]); setOpen(true); }}>
           Add Ad
@@ -126,7 +126,7 @@ export default function AdList() {
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Upload Image</Button>
+              <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
 

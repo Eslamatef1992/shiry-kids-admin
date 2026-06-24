@@ -47,16 +47,16 @@ export default function ProductList() {
   const cols = [
     { title: t('name'), dataIndex: 'name', render: (n, r) => <Space><img src={r.images?.[0] ? `${BASE}${r.images[0]}` : undefined} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, background: '#f0f0f0' }} alt="" />{n}</Space> },
     { title: t('vendor'), render: r => r.vendor?.name },
-    { title: 'Category', render: r => r.category?.name || '—' },
+    { title: t('category'), render: r => r.category?.name || '—' },
     { title: t('price'), dataIndex: 'price', render: p => `${p} KD` },
     { title: t('stock'), dataIndex: 'stock' },
     { title: t('status'), dataIndex: 'status', render: s => <Tag color={s === 'active' ? 'green' : s === 'draft' ? 'orange' : 'red'}>{s}</Tag> },
     {
       title: 'Tags', render: r => (
         <Space size={4} wrap>
-          {r.is_new_arrival && <Tag color="blue">New</Tag>}
-          {r.featured && <Tag color="gold">Best Seller</Tag>}
-          {r.is_weekly_offer && <Tag color="purple">Weekly</Tag>}
+          {r.is_new_arrival && <Tag color="blue">{t('newArrival')}</Tag>}
+          {r.featured && <Tag color="gold">{t('bestSeller')}</Tag>}
+          {r.is_weekly_offer && <Tag color="purple">{t('weeklyOffer')}</Tag>}
         </Space>
       )
     },
@@ -125,7 +125,7 @@ export default function ProductList() {
               listType="picture-card"
               multiple
             >
-              <div><UploadOutlined /><div style={{ marginTop: 8 }}>Upload</div></div>
+              <div><UploadOutlined /><div style={{ marginTop: 8 }}>{t('upload')}</div></div>
             </Upload>
           </Form.Item>
 

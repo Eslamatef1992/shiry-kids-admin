@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
+import { useLang } from '../../contexts/LangContext';
 
 export default function SeoList() {
+  const { t } = useLang();
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
@@ -17,7 +19,7 @@ export default function SeoList() {
   };
 
   const cols = [
-    { title: 'Page', dataIndex: 'page', render: p => <strong>/{p}</strong> },
+    { title: t('name'), dataIndex: 'page', render: p => <strong>/{p}</strong> },
     { title: 'Title', dataIndex: 'title' },
     { title: 'Description', dataIndex: 'description', ellipsis: true },
     { title: 'Keywords', dataIndex: 'keywords', ellipsis: true },
@@ -28,7 +30,7 @@ export default function SeoList() {
 
   return (
     <div>
-      <h2 style={{fontWeight:800,marginBottom:16}}>SEO Pages</h2>
+      <h2 style={{fontWeight:800,marginBottom:16}}>{t('seoPages')}</h2>
       <Table dataSource={data} columns={cols} rowKey="id" />
       <Modal title="Edit SEO" open={open} onCancel={() => setOpen(false)} onOk={() => form.submit()} okButtonProps={{style:{background:'#FF383C'}}}>
         <Form form={form} layout="vertical" onFinish={save}>

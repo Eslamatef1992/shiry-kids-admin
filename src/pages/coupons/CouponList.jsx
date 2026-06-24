@@ -104,7 +104,7 @@ export default function CouponList() {
     {
       title: t('actions'), render: (_, r) => (
         <Space>
-          <Button icon={<QrcodeOutlined />} size="small" onClick={() => openQrModal(r)}>QR Codes</Button>
+          <Button icon={<QrcodeOutlined />} size="small" onClick={() => openQrModal(r)}>{t('qrCodes')}</Button>
           <Button icon={<EditOutlined />} size="small" onClick={() => {
             setEditing(r);
             form.setFieldsValue({ ...r, expiry_date: r.expiry_date ? dayjs(r.expiry_date) : null });
@@ -151,7 +151,7 @@ export default function CouponList() {
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Upload Image</Button>
+              <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
 
@@ -230,7 +230,7 @@ export default function CouponList() {
                 listType="picture"
                 accept="image/*"
               >
-                <Button icon={<UploadOutlined />}>Select QR Images</Button>
+                <Button icon={<UploadOutlined />}>{t('selectQrImages')}</Button>
               </Upload>
               <Button type="primary" style={{ background: '#FF383C' }} loading={qrLoading}
                 onClick={uploadQrCodes} disabled={qrUploadFiles.length === 0}>

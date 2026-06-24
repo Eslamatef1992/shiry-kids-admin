@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Card, Upload, Button, message, Typography, Space, Alert } from 'antd';
 import { UploadOutlined, QrcodeOutlined, InboxOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
+import { useLang } from '../../contexts/LangContext';
 
 const { Title, Paragraph, Text } = Typography;
 
 export default function QrGenerator() {
+  const { t } = useLang();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -46,9 +48,9 @@ export default function QrGenerator() {
 
   return (
     <div>
-      <h2 style={{ fontWeight: 800, marginBottom: 16 }}>QR Code Generator</h2>
+      <h2 style={{ fontWeight: 800, marginBottom: 16 }}>{t('qrGenerator')}</h2>
       <Card style={{ borderRadius: 12, maxWidth: 640 }}>
-        <Title level={5} style={{ marginTop: 0 }}>Generate QR codes from a spreadsheet</Title>
+        <Title level={5} style={{ marginTop: 0 }}>{t('generateQrSpreadsheet')}</Title>
         <Paragraph type="secondary">
           Upload an Excel (.xlsx/.xls) or CSV file with one code or link per row in the first column
           (e.g. serial numbers like <Text code>f9b434c57e</Text> or full scan links like{' '}

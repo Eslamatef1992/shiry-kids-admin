@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Table, Tag, Select, Space, Card, Statistic, Row, Col } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
+import { useLang } from '../../contexts/LangContext';
 
 export default function QRScannerLog() {
+  const { t } = useLang();
   const [data, setData] = useState([]);
   const [status, setStatus] = useState('');
 
@@ -26,7 +28,7 @@ export default function QRScannerLog() {
 
   return (
     <div>
-      <h2 style={{fontWeight:800,marginBottom:16}}>QR Scanner Logs</h2>
+      <h2 style={{fontWeight:800,marginBottom:16}}>{t('qrScannerLogs')}</h2>
       <Row gutter={16} style={{marginBottom:20}}>
         {[
           {title:'Valid Scans',value:valid,color:'#52c41a'},

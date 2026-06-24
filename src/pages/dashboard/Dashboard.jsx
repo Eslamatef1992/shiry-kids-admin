@@ -9,6 +9,7 @@ import {
   PieChart, Pie, Cell,
 } from 'recharts';
 import api from '../../api/axios';
+import { useLang } from '../../contexts/LangContext';
 
 const PRIMARY = '#FF383C';
 const COLORS = {
@@ -29,6 +30,7 @@ const STATUS_TAG = {
 };
 
 export default function Dashboard() {
+  const { t } = useLang();
   const [stats, setStats] = useState({});
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,25 +47,25 @@ export default function Dashboard() {
 
   const cards = [
     {
-      title: 'Total Revenue',
+      title: t('totalRevenue'),
       value: `KD ${parseFloat(stats.revenue || 0).toFixed(3)}`,
       icon: <DollarOutlined />,
       bg: '#FFEDEE', color: PRIMARY,
     },
     {
-      title: 'Total Orders',
+      title: t('totalOrders'),
       value: (stats.totalOrders || 0).toLocaleString(),
       icon: <ShoppingCartOutlined />,
       bg: '#EEF1FF', color: '#6C5CE7',
     },
     {
-      title: 'Total Customers',
+      title: t('totalCustomers'),
       value: (stats.totalUsers || 0).toLocaleString(),
       icon: <UserOutlined />,
       bg: '#E8F8F0', color: '#2ED573',
     },
     {
-      title: 'Total Products',
+      title: t('totalProducts'),
       value: (stats.totalProducts || 0).toLocaleString(),
       icon: <ShopOutlined />,
       bg: '#FFF6E5', color: '#FFA940',
@@ -75,24 +77,24 @@ export default function Dashboard() {
   const statusCounts = stats.orderStatusCounts || { processing: 0, shipped: 0, arrived: 0, cancelled: 0 };
   const totalStatus = Object.values(statusCounts).reduce((a, b) => a + b, 0) || 1;
   const pieData = [
-    { name: 'Processing', key: 'processing', value: statusCounts.processing },
-    { name: 'Shipped', key: 'shipped', value: statusCounts.shipped },
-    { name: 'Arrived', key: 'arrived', value: statusCounts.arrived },
-    { name: 'Cancelled', key: 'cancelled', value: statusCounts.cancelled },
+    { name: t('processing'), key: 'processing', value: statusCounts.processing },
+    { name: t('shipped'), key: 'shipped', value: statusCounts.shipped },
+    { name: t('arrived'), key: 'arrived', value: statusCounts.arrived },
+    { name: t('cancelled'), key: 'cancelled', value: statusCounts.cancelled },
   ];
 
   const orderColumns = [
-    { title: 'Order #', dataIndex: 'order_number', key: 'order_number', render: (v) => <b>{v}</b> },
+    { title: t('orderNumber'), dataIndex: 'order_number', key: 'order_number', render: (v) => <b>{v}</b> },
     {
       title: 'Customer', key: 'customer',
       render: (_, r) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Avatar size={28} style={{ background: PRIMARY }}>{r.user?.name?.[0] || '?'}</Avatar>
-          <span>{r.user?.name || 'Guest'}</span>
+          <span>{r.user?.name || t('guest')}</span>
         </div>
       ),
     },
-    { title: 'Total', dataIndex: 'total', key: 'total', render: (v) => `KD ${parseFloat(v).toFixed(3)}` },
+    { title: t('total'), dataIndex: 'total', key: 'total', render: (v) => `KD ${parseFloat(v).toFixed(3)}` },
     {
       title: 'Payment', dataIndex: 'payment_status', key: 'payment_status',
       render: (v) => <Tag color={STATUS_TAG[v] || 'default'}>{v}</Tag>,
@@ -106,7 +108,7 @@ export default function Dashboard() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ fontWeight: 800, fontSize: 26, margin: 0 }}>Dashboard</h2>
+        <h2 style={{ fontWeight: 800, fontSize: 26, margin: 0 }}>{t('dashboard')}</h2>
       </div>
 
       {/* Stat cards */}
@@ -133,7 +135,7 @@ export default function Dashboard() {
         <Col xs={24} lg={16}>
           <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', height: '100%' }}>
             <div style={{ marginBottom: 16 }}>
-              <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18 }}>Statistics of Orders</h3>
+              <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18 }}>{t('statisticsOfOrders')}</h3>
               <p style={{ color: '#999', fontSize: 13, margin: '4px 0 0' }}>Order growth over the last 6 months</p>
             </div>
             <ResponsiveContainer width="100%" height={280}>
@@ -142,14 +144,14 @@ export default function Dashboard() {
                 <XAxis dataKey="month" axisLine={false} tickLine={false} />
                 <YAxis axisLine={false} tickLine={false} />
                 <Tooltip cursor={{ fill: 'rgba(255,56,60,0.06)' }} />
-                <Bar dataKey="count" name="Orders" fill={PRIMARY} radius={[8, 8, 0, 0]} barSize={36} />
+                <Bar dataKey="count" name={t('orders')} fill={PRIMARY} radius={[8, 8, 0, 0]} barSize={36} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
         </Col>
         <Col xs={24} lg={8}>
           <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', height: '100%' }}>
-            <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18, marginBottom: 16 }}>Order Status</h3>
+            <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18, marginBottom: 16 }}>{t('orderStatusTitle')}</h3>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <PieChart width={200} height={200}>
                 <Pie
@@ -187,7 +189,7 @@ export default function Dashboard() {
         <Col span={24}>
           <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18 }}>Recent Orders</h3>
+              <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18 }}>{t('recentOrders')}</h3>
             </div>
             <Table
               columns={orderColumns}

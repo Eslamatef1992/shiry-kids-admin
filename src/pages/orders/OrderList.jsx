@@ -3,11 +3,13 @@ import { Table, Tag, Select, Space, Button, Modal, Descriptions, message } from 
 import { EyeOutlined, PrinterOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import { printOrder } from '../../utils/printOrder';
+import { useLang } from '../../contexts/LangContext';
 
 const STATUS_COLOR = { processing:'blue', shipped:'orange', arrived:'green', cancelled:'red' };
 const PAY_COLOR    = { paid:'green', pending:'orange', failed:'red', refunded:'purple' };
 
 export default function OrderList() {
+  const { t } = useLang();
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState({});
@@ -21,12 +23,12 @@ export default function OrderList() {
   };
 
   const cols = [
-    { title: 'Order #', dataIndex: 'order_number', render: n => <strong>{n}</strong> },
-    { title: 'Customer', render: r => r.user?.name || '-' },
-    { title: 'Total', dataIndex: 'total', render: t => `${t} KD` },
-    { title: 'Payment', dataIndex: 'payment_method', render: m => m?.toUpperCase() },
+    { title: t('orderNumber'), dataIndex: 'order_number', render: n => <strong>{n}</strong> },
+    { title: t('customer'), render: r => r.user?.name || '-' },
+    { title: t('total'), dataIndex: 'total', render: t => `${t} KD` },
+    { title: t('payment'), dataIndex: 'payment_method', render: m => m?.toUpperCase() },
     { title: 'Pay Status', dataIndex: 'payment_status', render: s => <Tag color={PAY_COLOR[s]}>{s}</Tag> },
-    { title: 'Order Status', dataIndex: 'order_status', render: (s, r) => (
+    { title: t('orderStatus'), dataIndex: 'order_status', render: (s, r) => (
       <Select size="small" value={s} style={{width:130}}
         onChange={v => updateStatus(r.id,'order_status',v)}
         options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
@@ -43,7 +45,7 @@ export default function OrderList() {
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',marginBottom:16}}>
-        <h2 style={{fontWeight:800}}>Orders</h2>
+        <h2 style={{fontWeight:800}}>{t('orders')}</h2>
         <Space>
           <Select placeholder="Payment Status" allowClear style={{width:150}} onChange={v => setFilters(f=>({...f,payment_status:v}))}
             options={['paid','pending','failed','refunded'].map(x=>({value:x,label:x}))} />

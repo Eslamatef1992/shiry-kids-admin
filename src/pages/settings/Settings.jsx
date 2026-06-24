@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Card, Tabs, message, InputNumber } from 'antd';
 import api from '../../api/axios';
+import { useLang } from '../../contexts/LangContext';
 
 export default function Settings() {
+  const { t } = useLang();
   const [data, setData] = useState({});
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -40,10 +42,10 @@ export default function Settings() {
 
   return (
     <div>
-      <h2 style={{fontWeight:800,marginBottom:24}}>Settings</h2>
+      <h2 style={{fontWeight:800,marginBottom:24}}>{t('settings')}</h2>
       <Form form={form} layout="vertical" onFinish={save}>
         <Tabs items={tabItems} />
-        <Button type="primary" htmlType="submit" loading={loading} style={{background:'#FF383C',marginTop:16}}>Save Settings</Button>
+        <Button type="primary" htmlType="submit" loading={loading} style={{background:'#FF383C',marginTop:16}}>{t('saveSettings')}</Button>
       </Form>
     </div>
   );

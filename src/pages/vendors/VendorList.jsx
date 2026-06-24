@@ -80,7 +80,7 @@ export default function VendorList() {
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Upload Logo</Button>
+              <Button icon={<UploadOutlined />}>{t('uploadLogo')}</Button>
             </Upload>
           </Form.Item>
           <Form.Item name="status" label={t('status')}>

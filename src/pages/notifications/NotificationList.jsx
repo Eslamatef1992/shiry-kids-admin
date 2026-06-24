@@ -72,7 +72,7 @@ export default function NotificationList() {
         ? <img src={`${BASE}${img}`} style={{ width: 70, height: 40, objectFit: 'cover', borderRadius: 4 }} alt="" />
         : '—',
     },
-    { title: 'Title', dataIndex: 'title' },
+    { title: t('name'), dataIndex: 'title' },
     { title: 'Body', dataIndex: 'body', ellipsis: true },
     {
       title: 'Linked To', render: (_, r) => (
@@ -109,7 +109,7 @@ export default function NotificationList() {
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Upload Image</Button>
+              <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
 

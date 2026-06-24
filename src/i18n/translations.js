@@ -77,6 +77,59 @@ export const translations = {
     signInDashboard: 'Sign in to your dashboard',
     password: 'Password',
     invalidCredentials: 'Invalid email or password',
+
+    // Dashboard
+    totalCustomers: 'Total Customers',
+    statisticsOfOrders: 'Statistics of Orders',
+    orderGrowthSubtitle: 'Order growth over the last 6 months',
+    orderStatusTitle: 'Order Status',
+    recentOrders: 'Recent Orders',
+    customer: 'Customer',
+    payment: 'Payment',
+    refunded: 'Refunded',
+
+    // Pages / Sections
+    ads: 'Ads',
+    banners: 'Banners',
+    categories: 'Categories',
+    notifications: 'Notifications',
+    landingPage: 'Landing Page',
+    qrGenerator: 'QR Code Generator',
+    qrScannerLogs: 'QR Scanner Logs',
+    seoPages: 'SEO Pages',
+
+    // Actions / Buttons
+    uploadImage: 'Upload Image',
+    uploadLogo: 'Upload Logo',
+    upload: 'Upload',
+    generate: 'Generate',
+    saveSettings: 'Save Settings',
+    newCouponCode: 'New Coupon Code',
+    addRole: 'Add Role',
+    addAdmin: 'Add Admin',
+    addCategory: 'Add Category',
+    addVendor: 'Add Vendor',
+    addBanner: 'Add Banner',
+    addAd: 'Add Ad',
+    addNotification: 'Add Notification',
+    ban: 'Ban',
+    unban: 'Unban',
+    qrCodes: 'QR Codes',
+    selectQrImages: 'Select QR Images',
+    generateQrSpreadsheet: 'Generate QR codes from a spreadsheet',
+
+    // Product tags
+    newArrival: 'New',
+    bestSeller: 'Best Seller',
+    weeklyOffer: 'Weekly',
+    homePageSections: 'Home Page Sections',
+    variants: 'Variants',
+
+    // Gallery / Landing
+    galleryImages: 'Gallery Images',
+
+    // Users
+    guest: 'Guest',
   },
 
   ar: {
@@ -157,5 +210,58 @@ export const translations = {
     signInDashboard: 'تسجيل الدخول إلى لوحة التحكم',
     password: 'كلمة المرور',
     invalidCredentials: 'بريد إلكتروني أو كلمة مرور غير صحيحة',
+
+    // Dashboard
+    totalCustomers: 'إجمالي العملاء',
+    statisticsOfOrders: 'إحصائيات الطلبات',
+    orderGrowthSubtitle: 'نمو الطلبات خلال آخر 6 أشهر',
+    orderStatusTitle: 'حالة الطلبات',
+    recentOrders: 'الطلبات الأخيرة',
+    customer: 'العميل',
+    payment: 'الدفع',
+    refunded: 'مسترد',
+
+    // Pages / Sections
+    ads: 'الإعلانات',
+    banners: 'البانرات',
+    categories: 'الفئات',
+    notifications: 'الإشعارات',
+    landingPage: 'الصفحة الرئيسية',
+    qrGenerator: 'مولّد رموز QR',
+    qrScannerLogs: 'سجلات ماسح QR',
+    seoPages: 'صفحات SEO',
+
+    // Actions / Buttons
+    uploadImage: 'رفع صورة',
+    uploadLogo: 'رفع الشعار',
+    upload: 'رفع',
+    generate: 'توليد',
+    saveSettings: 'حفظ الإعدادات',
+    newCouponCode: 'كود خصم جديد',
+    addRole: 'إضافة دور',
+    addAdmin: 'إضافة مشرف',
+    addCategory: 'إضافة فئة',
+    addVendor: 'إضافة مورد',
+    addBanner: 'إضافة بانر',
+    addAd: 'إضافة إعلان',
+    addNotification: 'إضافة إشعار',
+    ban: 'حظر',
+    unban: 'رفع الحظر',
+    qrCodes: 'رموز QR',
+    selectQrImages: 'اختر صور QR',
+    generateQrSpreadsheet: 'توليد رموز QR من جدول بيانات',
+
+    // Product tags
+    newArrival: 'جديد',
+    bestSeller: 'الأكثر مبيعاً',
+    weeklyOffer: 'أسبوعي',
+    homePageSections: 'أقسام الصفحة الرئيسية',
+    variants: 'المتغيرات',
+
+    // Gallery / Landing
+    galleryImages: 'صور المعرض',
+
+    // Users
+    guest: 'زائر',
   },
 };

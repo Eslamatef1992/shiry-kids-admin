@@ -3,8 +3,10 @@ import { Table, Tag, Select, Space, Button, Modal, Descriptions, message } from 
 import { EyeOutlined, PrinterOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import { printOrder } from '../../utils/printOrder';
+import { useLang } from '../../contexts/LangContext';
 
 export default function GuestOrderList() {
+  const { t } = useLang();
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState({});
@@ -18,12 +20,12 @@ export default function GuestOrderList() {
   };
 
   const cols = [
-    { title: 'Order #', dataIndex: 'order_number', render: n => <strong>{n}</strong> },
+    { title: t('orderNumber'), dataIndex: 'order_number', render: n => <strong>{n}</strong> },
     { title: 'Guest Name', dataIndex: 'name' },
     { title: 'Phone', dataIndex: 'phone' },
-    { title: 'Total', dataIndex: 'total', render: t => `${t} KD` },
+    { title: t('total'), dataIndex: 'total', render: t => `${t} KD` },
     { title: 'Pay Status', dataIndex: 'payment_status', render: s => <Tag color={s==='paid'?'green':s==='pending'?'orange':'red'}>{s}</Tag> },
-    { title: 'Order Status', dataIndex: 'order_status', render: (s, r) => (
+    { title: t('orderStatus'), dataIndex: 'order_status', render: (s, r) => (
       <Select size="small" value={s} style={{width:130}}
         onChange={v => updateStatus(r.id,'order_status',v)}
         options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
@@ -40,7 +42,7 @@ export default function GuestOrderList() {
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',marginBottom:16}}>
-        <h2 style={{fontWeight:800}}>Guest Orders</h2>
+        <h2 style={{fontWeight:800}}>{t('guestOrders')}</h2>
         <Select placeholder="Order Status" allowClear style={{width:160}} onChange={v => setFilters(f=>({...f,order_status:v}))}
           options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
       </div>

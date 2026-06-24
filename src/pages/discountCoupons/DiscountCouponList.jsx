@@ -3,8 +3,10 @@ import { Table, Button, Modal, Form, Input, Select, InputNumber, Space, Popconfi
 import { PlusOutlined, EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import dayjs from 'dayjs';
+import { useLang } from '../../contexts/LangContext';
 
 export default function DiscountCouponList() {
+  const { t } = useLang();
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -28,14 +30,14 @@ export default function DiscountCouponList() {
   };
 
   const cols = [
-    { title: 'Code', dataIndex: 'code', render: c => <Tag color="blue" style={{fontSize:14,fontWeight:700,letterSpacing:1}}>{c}</Tag> },
+    { title: t('newCouponCode'), dataIndex: 'code', render: c => <Tag color="blue" style={{fontSize:14,fontWeight:700,letterSpacing:1}}>{c}</Tag> },
     { title: 'Type', dataIndex: 'type', render: t => <Tag>{t}</Tag> },
     { title: 'Value', render: r => r.type==='percentage' ? `${r.value}%` : `${r.value} KD` },
     { title: 'Min Order', dataIndex: 'min_order', render: v => `${v} KD` },
     { title: 'Uses', render: r => `${r.used_count} / ${r.max_uses || '∞'}` },
     { title: 'Expiry', dataIndex: 'expiry_date', render: d => d ? new Date(d).toLocaleDateString() : '—' },
     { title: 'Status', dataIndex: 'status', render: s => <Tag color={s==='active'?'green':s==='expired'?'red':'orange'}>{s}</Tag> },
-    { title: 'Actions', render: (_, r) => (
+    { title: t('actions'), render: (_, r) => (
       <Space>
         <Button icon={<EditOutlined />} size="small" onClick={() => {
           setEditing(r); form.setFieldsValue({ ...r, expiry_date: r.expiry_date ? dayjs(r.expiry_date) : null }); setOpen(true);
@@ -50,8 +52,8 @@ export default function DiscountCouponList() {
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',marginBottom:16}}>
-        <h2 style={{fontWeight:800}}>Discount Coupons</h2>
-        <Button type="primary" icon={<PlusOutlined />} style={{background:'#FF383C'}} onClick={() => { setEditing(null); form.resetFields(); setOpen(true); }}>New Coupon Code</Button>
+        <h2 style={{fontWeight:800}}>{t('discountCoupons')}</h2>
+        <Button type="primary" icon={<PlusOutlined />} style={{background:'#FF383C'}} onClick={() => { setEditing(null); form.resetFields(); setOpen(true); }}>{t('newCouponCode')}</Button>
       </div>
       <Table dataSource={data} columns={cols} rowKey="id" />
       <Modal title={editing?'Edit Discount Coupon':'New Discount Coupon'} open={open} onCancel={() => setOpen(false)} onOk={() => form.submit()} okButtonProps={{style:{background:'#FF383C'}}}>
@@ -59,7 +61,7 @@ export default function DiscountCouponList() {
           <Form.Item label="Code" style={{marginBottom:0}}>
             <Space.Compact style={{width:'100%'}}>
               <Form.Item name="code" noStyle rules={[{required:true}]}><Input placeholder="SUMMER20" style={{textTransform:'uppercase'}} /></Form.Item>
-              <Button icon={<CopyOutlined />} onClick={generateCode}>Generate</Button>
+              <Button icon={<CopyOutlined />} onClick={generateCode}>{t('generate')}</Button>
             </Space.Compact>
           </Form.Item>
           <Form.Item name="type" label="Type" rules={[{required:true}]} style={{marginTop:16}}>
