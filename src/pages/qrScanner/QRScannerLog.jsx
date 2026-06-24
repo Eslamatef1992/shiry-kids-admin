@@ -17,13 +17,41 @@ export default function QRScannerLog() {
   const notFound = data.filter(d => d.status === 'not_found').length;
 
   const cols = [
-    { title: 'QR Code', dataIndex: 'qr_code', render: c => <code style={{fontSize:12}}>{c}</code> },
+    { title: 'QR Code', dataIndex: 'qr_code', width: 220, render: (c, r) => {
+      if (r.coupon_title) {
+        return <span style={{fontSize:12}}>
+          <strong>🎟 {r.coupon_title}</strong><br/>
+          <span style={{color:'#999',fontSize:11}}>{c}</span>
+        </span>;
+      }
+      try {
+        const obj = JSON.parse(c);
+        return <span style={{fontSize:12}}>
+          <strong>Booking #{obj.bookingNumber}</strong><br/>
+          <span style={{color:'#999',fontSize:11}}>Slot {obj.slotId} · {obj.slotTime} · ×{obj.amount}</span>
+        </span>;
+      } catch { return <code style={{fontSize:12}}>{c}</code>; }
+    }},
+    { title: 'Customer', render: r => {
+      const u = r.user_info;
+      if (!u) return <span style={{color:'#ccc'}}>—</span>;
+      return <span style={{fontSize:12}}>
+        <strong>{u.name || '—'}</strong><br/>
+        <span style={{color:'#666'}}>{u.email || ''}</span><br/>
+        <span style={{color:'#999'}}>{u.phone || ''}</span>
+      </span>;
+    }},
+    { title: 'Order #', render: r => r.order_number ? <code style={{fontSize:12}}>{r.order_number}</code> : '—' },
     { title: 'Scanned By', render: r => r.admin?.name || '—' },
     { title: 'Status', dataIndex: 'status', render: s => (
       <Tag icon={s==='valid'?<CheckCircleOutlined />:s==='used'?<CloseCircleOutlined />:<QuestionCircleOutlined />}
         color={s==='valid'?'green':s==='used'?'red':'orange'}>{s.replace('_',' ')}</Tag>
     )},
-    { title: 'Scanned At', dataIndex: 'created_at', render: d => new Date(d).toLocaleString() },
+    { title: 'Scanned At', dataIndex: 'created_at', render: d => {
+      if (!d) return '—';
+      const date = new Date(d.includes('T') ? d : d.replace(' ', 'T') + 'Z');
+      return isNaN(date) ? d : date.toLocaleString();
+    }},
   ];
 
   return (
