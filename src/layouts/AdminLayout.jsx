@@ -34,26 +34,26 @@ export default function AdminLayout() {
       { key: '/vendors', icon: <ShopOutlined />, label: t('vendors') },
     ]},
     { key: 'catalog-section', label: t('products'), type: 'group', children: [
-      { key: '/categories', icon: <AppstoreOutlined />, label: 'Categories' },
+      { key: '/categories', icon: <AppstoreOutlined />, label: t('categories') },
       { key: '/products', icon: <ShopOutlined />, label: t('products') },
       { key: '/coupons', icon: <GiftOutlined />, label: t('coupons') },
       { key: '/discount-coupons', icon: <PercentageOutlined />, label: t('discountCoupons') },
     ]},
-    { key: 'content-section', label: 'Content', type: 'group', children: [
-      { key: '/banners', icon: <PictureOutlined />, label: 'Banners' },
-      { key: '/ads', icon: <BellOutlined />, label: 'Ads' },
-      { key: '/notifications', icon: <NotificationOutlined />, label: 'Notifications' },
-      { key: '/landing-page', icon: <LayoutOutlined />, label: 'Landing Page' },
+    { key: 'content-section', label: t('content'), type: 'group', children: [
+      { key: '/banners', icon: <PictureOutlined />, label: t('banners') },
+      { key: '/ads', icon: <BellOutlined />, label: t('ads') },
+      { key: '/notifications', icon: <NotificationOutlined />, label: t('notifications') },
+      { key: '/landing-page', icon: <LayoutOutlined />, label: t('landingPage') },
     ]},
     { key: 'orders-section', label: t('orders'), type: 'group', children: [
       { key: '/orders', icon: <ShoppingCartOutlined />, label: t('orders') },
       { key: '/guest-orders', icon: <UsergroupAddOutlined />, label: t('guestOrders') },
     ]},
-    { key: 'scanner-section', label: 'Mobile', type: 'group', children: [
+    { key: 'scanner-section', label: t('mobile'), type: 'group', children: [
       { key: '/qr-scanner', icon: <QrcodeOutlined />, label: t('qrScanner') },
-      { key: '/qr-generator', icon: <QrcodeOutlined />, label: 'QR Generator' },
+      { key: '/qr-generator', icon: <QrcodeOutlined />, label: t('qrGenerator') },
     ]},
-    { key: 'system-section', label: 'System', type: 'group', children: [
+    { key: 'system-section', label: t('system'), type: 'group', children: [
       { key: '/settings', icon: <SettingOutlined />, label: t('settings') },
       { key: '/seo', icon: <GlobalOutlined />, label: t('seo') },
       { key: '/cms', icon: <FileTextOutlined />, label: t('cms') },

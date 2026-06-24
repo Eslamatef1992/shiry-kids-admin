@@ -86,7 +86,7 @@ export default function Dashboard() {
   const orderColumns = [
     { title: t('orderNumber'), dataIndex: 'order_number', key: 'order_number', render: (v) => <b>{v}</b> },
     {
-      title: 'Customer', key: 'customer',
+      title: t('customer'), key: 'customer',
       render: (_, r) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Avatar size={28} style={{ background: PRIMARY }}>{r.user?.name?.[0] || '?'}</Avatar>
@@ -96,11 +96,11 @@ export default function Dashboard() {
     },
     { title: t('total'), dataIndex: 'total', key: 'total', render: (v) => `KD ${parseFloat(v).toFixed(3)}` },
     {
-      title: 'Payment', dataIndex: 'payment_status', key: 'payment_status',
+      title: t('payment'), dataIndex: 'payment_status', key: 'payment_status',
       render: (v) => <Tag color={STATUS_TAG[v] || 'default'}>{v}</Tag>,
     },
     {
-      title: 'Status', dataIndex: 'order_status', key: 'order_status',
+      title: t('status'), dataIndex: 'order_status', key: 'order_status',
       render: (v) => <Tag color={STATUS_TAG[v] || 'default'}>{v}</Tag>,
     },
   ];
@@ -136,7 +136,7 @@ export default function Dashboard() {
           <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', height: '100%' }}>
             <div style={{ marginBottom: 16 }}>
               <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18 }}>{t('statisticsOfOrders')}</h3>
-              <p style={{ color: '#999', fontSize: 13, margin: '4px 0 0' }}>Order growth over the last 6 months</p>
+              <p style={{ color: '#999', fontSize: 13, margin: '4px 0 0' }}>{t('orderGrowthSubtitle')}</p>
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={monthlyOrders}>

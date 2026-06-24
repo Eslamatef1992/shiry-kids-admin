@@ -94,9 +94,12 @@ export const translations = {
     categories: 'Categories',
     notifications: 'Notifications',
     landingPage: 'Landing Page',
-    qrGenerator: 'QR Code Generator',
+    qrGenerator: 'QR Generator',
     qrScannerLogs: 'QR Scanner Logs',
     seoPages: 'SEO Pages',
+    content: 'Content',
+    mobile: 'Mobile',
+    system: 'System',
 
     // Actions / Buttons
     uploadImage: 'Upload Image',
@@ -227,9 +230,12 @@ export const translations = {
     categories: 'الفئات',
     notifications: 'الإشعارات',
     landingPage: 'الصفحة الرئيسية',
-    qrGenerator: 'مولّد رموز QR',
+    qrGenerator: 'مولّد QR',
     qrScannerLogs: 'سجلات ماسح QR',
     seoPages: 'صفحات SEO',
+    content: 'المحتوى',
+    mobile: 'الجوال',
+    system: 'النظام',
 
     // Actions / Buttons
     uploadImage: 'رفع صورة',
