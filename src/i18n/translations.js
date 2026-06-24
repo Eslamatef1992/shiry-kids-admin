@@ -97,9 +97,28 @@ export const translations = {
     qrGenerator: 'QR Generator',
     qrScannerLogs: 'QR Scanner Logs',
     seoPages: 'SEO Pages',
+    couponCategories: 'Coupon Categories',
     content: 'Content',
     mobile: 'Mobile',
     system: 'System',
+
+    // Category
+    nameEn: 'Name (EN)',
+    nameAr: 'Name (AR)',
+    sort: 'Sort',
+    sortOrder: 'Sort Order',
+    addCategory: 'Add Category',
+    editCategory: 'Edit Category',
+    categoryName: 'Category Name',
+
+    // Settings tabs
+    social: 'Social',
+    shipping: 'Shipping',
+    payment: 'Payment',
+    general: 'General',
+    contact: 'Contact',
+    settingsSaved: 'Settings saved',
+    errorSaving: 'Error saving settings',
 
     // Actions / Buttons
     uploadImage: 'Upload Image',
@@ -233,9 +252,28 @@ export const translations = {
     qrGenerator: 'مولّد QR',
     qrScannerLogs: 'سجلات ماسح QR',
     seoPages: 'صفحات SEO',
+    couponCategories: 'فئات الكوبونات',
     content: 'المحتوى',
     mobile: 'الجوال',
     system: 'النظام',
+
+    // Category
+    nameEn: 'الاسم (EN)',
+    nameAr: 'الاسم (AR)',
+    sort: 'الترتيب',
+    sortOrder: 'ترتيب العرض',
+    addCategory: 'إضافة فئة',
+    editCategory: 'تعديل فئة',
+    categoryName: 'اسم الفئة',
+
+    // Settings tabs
+    social: 'التواصل الاجتماعي',
+    shipping: 'الشحن',
+    payment: 'الدفع',
+    general: 'عام',
+    contact: 'التواصل',
+    settingsSaved: 'تم حفظ الإعدادات',
+    errorSaving: 'خطأ في حفظ الإعدادات',
 
     // Actions / Buttons
     uploadImage: 'رفع صورة',

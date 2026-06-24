@@ -11,6 +11,7 @@ const BASE = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || '';
 export default function CouponList() {
   const [data, setData] = useState([]);
   const [vendors, setVendors] = useState([]);
+  const [couponCategories, setCouponCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [fileList, setFileList] = useState([]);
@@ -184,10 +185,8 @@ export default function CouponList() {
               ]} />
             </Form.Item>
             <Form.Item name="category" label="Category">
-              <Select style={{ width: 160 }} allowClear placeholder="None" options={[
-                { value: 'birthday', label: 'Birthday' },
-                { value: 'mothers_day', label: "Mother's Day" },
-              ]} />
+              <Select style={{ width: 160 }} allowClear placeholder="None"
+                options={couponCategories.map(c => ({ value: c.slug, label: c.name }))} />
             </Form.Item>
             <Form.Item name="featured" label="Best Seller Coupon" valuePropName="checked">
               <Switch />

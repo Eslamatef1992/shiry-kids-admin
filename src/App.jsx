@@ -10,6 +10,7 @@ import UserList from './pages/users/UserList';
 import VendorList from './pages/vendors/VendorList';
 import ProductList from './pages/products/ProductList';
 import CouponList from './pages/coupons/CouponList';
+import CouponCategoryList from './pages/coupons/CouponCategoryList';
 import OrderList from './pages/orders/OrderList';
 import GuestOrderList from './pages/guestOrders/GuestOrderList';
 import DiscountCouponList from './pages/discountCoupons/DiscountCouponList';
@@ -64,6 +65,7 @@ export default function App() {
             <Route path="ads" element={<RequirePermission><AdList /></RequirePermission>} />
             <Route path="products" element={<RequirePermission><ProductList /></RequirePermission>} />
             <Route path="coupons" element={<RequirePermission><CouponList /></RequirePermission>} />
+            <Route path="coupon-categories" element={<RequirePermission><CouponCategoryList /></RequirePermission>} />
             <Route path="orders" element={<RequirePermission><OrderList /></RequirePermission>} />
             <Route path="guest-orders" element={<RequirePermission><GuestOrderList /></RequirePermission>} />
             <Route path="discount-coupons" element={<RequirePermission><DiscountCouponList /></RequirePermission>} />

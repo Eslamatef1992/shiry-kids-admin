@@ -38,6 +38,7 @@ export default function AdminLayout() {
       { key: '/products', icon: <ShopOutlined />, label: t('products') },
       { key: '/coupons', icon: <GiftOutlined />, label: t('coupons') },
       { key: '/discount-coupons', icon: <PercentageOutlined />, label: t('discountCoupons') },
+      { key: '/coupon-categories', icon: <AppstoreOutlined />, label: t('couponCategories') },
     ]},
     { key: 'content-section', label: t('content'), type: 'group', children: [
       { key: '/banners', icon: <PictureOutlined />, label: t('banners') },

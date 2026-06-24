@@ -37,12 +37,12 @@ export default function CategoryList() {
 
   const cols = [
     {
-      title: 'Image', dataIndex: 'image', width: 70,
+      title: t('image'), dataIndex: 'image', width: 70,
       render: img => img ? <img src={`${BASE}${img}`} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} alt="" /> : '—',
     },
-    { title: 'Name (EN)', dataIndex: 'name', render: v => <strong>{v}</strong> },
-    { title: 'Name (AR)', dataIndex: 'name_ar', render: v => <span dir="rtl">{v || '—'}</span> },
-    { title: 'Sort', dataIndex: 'sort', width: 70 },
+    { title: t('nameEn'), dataIndex: 'name', render: v => <strong>{v}</strong> },
+    { title: t('nameAr'), dataIndex: 'name_ar', render: v => <span dir="rtl">{v || '—'}</span> },
+    { title: t('sort'), dataIndex: 'sort', width: 70 },
     {
       title: t('actions'), render: (_, r) => (
         <Space>
@@ -71,14 +71,14 @@ export default function CategoryList() {
       </div>
       <Table dataSource={data} columns={cols} rowKey="id" />
       <Modal
-        title={editing ? 'Edit Category' : 'Add Category'}
+        title={editing ? t('editCategory') : t('addCategory')}
         open={open} onCancel={() => setOpen(false)}
         onOk={() => form.submit()} width={640}
         okButtonProps={{ style: { background: '#FF383C' } }}
       >
         <Form form={form} layout="vertical" onFinish={save}>
-          <BilingualField nameEn="name" nameAr="name_ar" label="Category Name" required />
-          <Form.Item label="Image">
+          <BilingualField nameEn="name" nameAr="name_ar" {...{label: t("categoryName")}} required />
+          <Form.Item label={t("image")}>
             <Upload
               fileList={fileList}
               beforeUpload={() => false}
@@ -88,7 +88,7 @@ export default function CategoryList() {
               <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
-          <Form.Item name="sort" label="Sort Order">
+          <Form.Item name="sort" label={t("sortOrder")}>
             <Input type="number" defaultValue={0} />
           </Form.Item>
         </Form>

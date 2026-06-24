@@ -19,8 +19,8 @@ export default function Settings() {
 
   const save = async (vals) => {
     setLoading(true);
-    try { await api.post('/settings', vals); message.success('Settings saved'); }
-    catch { message.error('Error saving settings'); }
+    try { await api.post('/settings', vals); message.success(t('settingsSaved')); }
+    catch { message.error(t('errorSaving')); }
     finally { setLoading(false); }
   };
 
@@ -28,7 +28,7 @@ export default function Settings() {
 
   const tabItems = groups.map(([group, settings]) => ({
     key: group,
-    label: group.charAt(0).toUpperCase() + group.slice(1),
+    label: t(group) || (group.charAt(0).toUpperCase() + group.slice(1)),
     children: (
       <Card style={{borderRadius:12}}>
         {settings.map(s => (
