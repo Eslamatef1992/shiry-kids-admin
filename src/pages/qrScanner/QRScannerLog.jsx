@@ -38,10 +38,16 @@ export default function QRScannerLog() {
       return <span style={{fontSize:12}}>
         <strong>{u.name || '—'}</strong><br/>
         <span style={{color:'#666'}}>{u.email || ''}</span><br/>
-        <span style={{color:'#999'}}>{u.phone || ''}</span>
+        <span style={{color:'#888',fontWeight:600}}>{u.phone || ''}</span>
       </span>;
     }},
     { title: 'Order #', render: r => r.order_number ? <code style={{fontSize:12}}>{r.order_number}</code> : '—' },
+    { title: 'Payment Date', render: r => {
+      const d = r.payment_date;
+      if (!d) return '—';
+      const date = new Date(d.includes('T') ? d : d.replace(' ', 'T') + 'Z');
+      return isNaN(date) ? d : date.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    }},
     { title: 'Scanned By', render: r => r.admin?.name || '—' },
     { title: 'Status', dataIndex: 'status', render: s => (
       <Tag icon={s==='valid'?<CheckCircleOutlined />:s==='used'?<CloseCircleOutlined />:<QuestionCircleOutlined />}
