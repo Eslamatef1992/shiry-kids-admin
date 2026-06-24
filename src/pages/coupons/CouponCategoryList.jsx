@@ -26,6 +26,7 @@ export default function CouponCategoryList() {
   };
 
   const cols = [
+    { title: 'Icon', dataIndex: 'icon', width: 60, render: v => <span style={{ fontSize: 24 }}>{v || '🏷️'}</span> },
     { title: t('nameEn'), dataIndex: 'name', render: v => <strong>{v}</strong> },
     { title: t('nameAr'), dataIndex: 'name_ar', render: v => <span dir="rtl">{v || '—'}</span> },
     { title: 'Slug', dataIndex: 'slug', render: v => <code>{v}</code> },
@@ -66,6 +67,9 @@ export default function CouponCategoryList() {
           </Form.Item>
           <Form.Item name="name_ar" label="Name (AR)">
             <Input dir="rtl" />
+          </Form.Item>
+          <Form.Item name="icon" label="Icon (emoji)" extra="Paste an emoji, e.g. 🎂 🎁 ✈️ 🎉">
+            <Input placeholder="🏷️" style={{ fontSize: 20 }} />
           </Form.Item>
           <Form.Item name="slug" label="Slug (e.g. birthday)">
             <Input placeholder="Auto-generated if empty" />

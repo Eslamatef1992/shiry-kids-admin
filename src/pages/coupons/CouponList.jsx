@@ -27,7 +27,11 @@ export default function CouponList() {
   const [qrLoading, setQrLoading] = useState(false);
 
   const load = () => api.get('/coupons').then(r => setData(r.data.data));
-  useEffect(() => { load(); api.get('/vendors').then(r => setVendors(r.data.data)); }, []);
+  useEffect(() => {
+    load();
+    api.get('/vendors').then(r => setVendors(r.data.data));
+    api.get('/coupon-categories').then(r => setCouponCategories(r.data.data)).catch(() => {});
+  }, []);
 
   const loadQrCodes = (couponId) => {
     setQrLoading(true);
