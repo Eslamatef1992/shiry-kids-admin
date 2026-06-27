@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Table, Tag, Avatar } from 'antd';
+import { Row, Col, Card, Table, Tag, Avatar, Statistic } from 'antd';
 import {
   ShoppingCartOutlined, UserOutlined, ShopOutlined, DollarOutlined,
-  ArrowUpOutlined, GiftOutlined,
+  TeamOutlined, GiftOutlined, ClockCircleOutlined, CalendarOutlined,
+  RiseOutlined, TagsOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -12,6 +13,8 @@ import api from '../../api/axios';
 import { useLang } from '../../contexts/LangContext';
 
 const PRIMARY = '#FF383C';
+const BASE = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || '';
+
 const COLORS = {
   processing: '#6C5CE7',
   shipped: '#54A0FF',
@@ -29,6 +32,23 @@ const STATUS_TAG = {
   refunded: 'default',
 };
 
+function StatCard({ title, value, icon, bg, color, sub }) {
+  return (
+    <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', height: '100%' }} bodyStyle={{ padding: 20 }}>
+      <div style={{
+        width: 44, height: 44, borderRadius: 12, background: bg,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 20, color, marginBottom: 14,
+      }}>
+        {icon}
+      </div>
+      <div style={{ fontSize: 24, fontWeight: 800, color: '#1A1A2E' }}>{value}</div>
+      <div style={{ color: '#999', fontSize: 13, marginTop: 4 }}>{title}</div>
+      {sub && <div style={{ color, fontSize: 12, marginTop: 4, fontWeight: 600 }}>{sub}</div>}
+    </Card>
+  );
+}
+
 export default function Dashboard() {
   const { t } = useLang();
   const [stats, setStats] = useState({});
@@ -45,42 +65,62 @@ export default function Dashboard() {
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
-  const cards = [
+  const row1Cards = [
     {
       title: t('totalRevenue'),
       value: `KD ${parseFloat(stats.revenue || 0).toFixed(3)}`,
-      icon: <DollarOutlined />,
-      bg: '#FFEDEE', color: PRIMARY,
+      icon: <DollarOutlined />, bg: '#FFEDEE', color: PRIMARY,
+      sub: `Today: KD ${parseFloat(stats.todayRevenue || 0).toFixed(3)}`,
     },
     {
-      title: t('totalOrders'),
-      value: (stats.totalOrders || 0).toLocaleString(),
-      icon: <ShoppingCartOutlined />,
-      bg: '#EEF1FF', color: '#6C5CE7',
+      title: 'Total Orders',
+      value: (stats.totalAllOrders || 0).toLocaleString(),
+      icon: <ShoppingCartOutlined />, bg: '#EEF1FF', color: '#6C5CE7',
+      sub: `Registered: ${stats.totalOrders || 0} · Guest: ${stats.totalGuestOrders || 0}`,
     },
     {
       title: t('totalCustomers'),
       value: (stats.totalUsers || 0).toLocaleString(),
-      icon: <UserOutlined />,
-      bg: '#E8F8F0', color: '#2ED573',
+      icon: <UserOutlined />, bg: '#E8F8F0', color: '#2ED573',
     },
     {
-      title: t('totalProducts'),
-      value: (stats.totalProducts || 0).toLocaleString(),
-      icon: <ShopOutlined />,
-      bg: '#FFF6E5', color: '#FFA940',
+      title: 'Total Vendors',
+      value: (stats.totalVendors || 0).toLocaleString(),
+      icon: <TeamOutlined />, bg: '#FFF0F6', color: '#EB2F96',
+    },
+  ];
+
+  const row2Cards = [
+    {
+      title: 'Guest Orders',
+      value: (stats.totalGuestOrders || 0).toLocaleString(),
+      icon: <TeamOutlined />, bg: '#F0F5FF', color: '#2F54EB',
+    },
+    {
+      title: 'Today\'s Orders',
+      value: (stats.todayOrders || 0).toLocaleString(),
+      icon: <CalendarOutlined />, bg: '#FFFBE6', color: '#D48806',
+    },
+    {
+      title: 'Pending Orders',
+      value: (stats.pendingOrders || 0).toLocaleString(),
+      icon: <ClockCircleOutlined />, bg: '#FFF7E6', color: '#FA8C16',
+    },
+    {
+      title: 'Total Coupons',
+      value: (stats.totalCoupons || 0).toLocaleString(),
+      icon: <TagsOutlined />, bg: '#F9F0FF', color: '#722ED1',
     },
   ];
 
   const monthlyOrders = stats.monthlyOrders || [];
-
   const statusCounts = stats.orderStatusCounts || { processing: 0, shipped: 0, arrived: 0, cancelled: 0 };
   const totalStatus = Object.values(statusCounts).reduce((a, b) => a + b, 0) || 1;
   const pieData = [
     { name: t('processing'), key: 'processing', value: statusCounts.processing },
-    { name: t('shipped'), key: 'shipped', value: statusCounts.shipped },
-    { name: t('arrived'), key: 'arrived', value: statusCounts.arrived },
-    { name: t('cancelled'), key: 'cancelled', value: statusCounts.cancelled },
+    { name: t('shipped'),    key: 'shipped',    value: statusCounts.shipped },
+    { name: t('arrived'),    key: 'arrived',    value: statusCounts.arrived },
+    { name: t('cancelled'),  key: 'cancelled',  value: statusCounts.cancelled },
   ];
 
   const orderColumns = [
@@ -105,27 +145,29 @@ export default function Dashboard() {
     },
   ];
 
+  const mostCoupon = stats.mostSellingCoupon;
+  const mostProduct = stats.mostSellingProduct;
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h2 style={{ fontWeight: 800, fontSize: 26, margin: 0 }}>{t('dashboard')}</h2>
       </div>
 
-      {/* Stat cards */}
+      {/* Row 1 — main KPI cards */}
       <Row gutter={[16, 16]}>
-        {cards.map(c => (
+        {row1Cards.map(c => (
           <Col key={c.title} xs={24} sm={12} lg={6}>
-            <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }} bodyStyle={{ padding: 20 }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: 12, background: c.bg,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, color: c.color, marginBottom: 14,
-              }}>
-                {c.icon}
-              </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#1A1A2E' }}>{c.value}</div>
-              <div style={{ color: '#999', fontSize: 13, marginTop: 4 }}>{c.title}</div>
-            </Card>
+            <StatCard {...c} />
+          </Col>
+        ))}
+      </Row>
+
+      {/* Row 2 — secondary stat cards */}
+      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+        {row2Cards.map(c => (
+          <Col key={c.title} xs={24} sm={12} lg={6}>
+            <StatCard {...c} />
           </Col>
         ))}
       </Row>
@@ -154,14 +196,7 @@ export default function Dashboard() {
             <h3 style={{ margin: 0, fontWeight: 800, fontSize: 18, marginBottom: 16 }}>{t('orderStatusTitle')}</h3>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <PieChart width={200} height={200}>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={55}
-                  outerRadius={80}
-                  paddingAngle={3}
-                >
+                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={80} paddingAngle={3}>
                   {pieData.map((entry) => (
                     <Cell key={entry.key} fill={COLORS[entry.key]} />
                   ))}
@@ -180,6 +215,52 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Most selling coupon & product */}
+      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+        <Col xs={24} sm={12}>
+          <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }} bodyStyle={{ padding: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <GiftOutlined style={{ fontSize: 18, color: '#EB2F96' }} />
+              <h3 style={{ margin: 0, fontWeight: 800, fontSize: 16 }}>Most Selling Coupon</h3>
+            </div>
+            {mostCoupon ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                {mostCoupon.image && (
+                  <img src={mostCoupon.image} alt="" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 10, background: '#f5f5f5' }} />
+                )}
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: '#1A1A2E' }}>{mostCoupon.name}</div>
+                  <div style={{ color: '#999', fontSize: 13, marginTop: 4 }}>{mostCoupon.qty} units sold</div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ color: '#bbb', fontSize: 13 }}>No data yet</div>
+            )}
+          </Card>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }} bodyStyle={{ padding: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <RiseOutlined style={{ fontSize: 18, color: '#2ED573' }} />
+              <h3 style={{ margin: 0, fontWeight: 800, fontSize: 16 }}>Most Selling Product</h3>
+            </div>
+            {mostProduct ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                {mostProduct.image && (
+                  <img src={mostProduct.image} alt="" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 10, background: '#f5f5f5' }} />
+                )}
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: '#1A1A2E' }}>{mostProduct.name}</div>
+                  <div style={{ color: '#999', fontSize: 13, marginTop: 4 }}>{mostProduct.qty} units sold</div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ color: '#bbb', fontSize: 13 }}>No data yet</div>
+            )}
           </Card>
         </Col>
       </Row>
