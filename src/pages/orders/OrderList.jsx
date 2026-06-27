@@ -94,8 +94,8 @@ export default function OrderList() {
     { title: t('orderNumber'), dataIndex: 'order_number', render: n => <strong>{n}</strong> },
     { title: t('customer'), render: r => (
       <span>
-        <div style={{fontWeight:600}}>{r.user?.name || '—'}</div>
-        <div style={{color:'#888',fontSize:12}}>{r.user?.phone || ''}</div>
+        <div style={{fontWeight:600}}>{r.user?.name || r.name || '—'}{r.is_guest ? <Tag color="default" style={{marginLeft:4,fontSize:10}}>Guest</Tag> : null}</div>
+        <div style={{color:'#888',fontSize:12}}>{r.user?.phone || r.phone || ''}</div>
       </span>
     )},
     { title: 'Vendor', render: r => <span style={{fontSize:12}}>{getVendors(r.items)}</span> },
