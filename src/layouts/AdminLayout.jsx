@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import logoImg from '/logo.png';
+import logoImg from '/logo.svg';
 import { Layout, Menu, Avatar, Dropdown, Button, Tooltip, Input, Badge, ConfigProvider } from 'antd';
 import {
   DashboardOutlined, UserOutlined, TeamOutlined, ShopOutlined,
