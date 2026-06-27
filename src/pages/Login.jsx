@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoImg from '/logo.png';
 import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -41,7 +42,7 @@ export default function Login() {
     >
       {/* Left: branding */}
       <div style={{ maxWidth: 420 }}>
-        <img src="/logo.png" alt="Shiry Kids" style={{ width: 110, marginBottom: 24 }} />
+        <img src={logoImg} alt="Shiry Kids" style={{ width: 110, marginBottom: 24 }} />
         <h1 style={{ fontSize: 36, fontWeight: 800, color: '#1a1a1a', margin: '0 0 16px' }}>
           Shiry Kids Fun
         </h1>

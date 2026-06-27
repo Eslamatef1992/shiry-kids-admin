@@ -1,4 +1,5 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import logoImg from '/logo.png';
 import { Layout, Menu, Avatar, Dropdown, Button, Tooltip, Input, Badge, ConfigProvider } from 'antd';
 import {
   DashboardOutlined, UserOutlined, TeamOutlined, ShopOutlined,
@@ -91,7 +92,7 @@ export default function AdminLayout() {
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '20px 20px 16px', direction: 'ltr',
         }}>
-          <img src="/logo.png" alt="Shiry Kids" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: 8 }} />
+          <img src={logoImg} alt="Shiry Kids" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: 8 }} />
           <div>
             <div style={{ color: '#fff', fontSize: 17, fontWeight: 800, lineHeight: 1.1 }}>Shiry Kids</div>
             <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11, marginTop: 2 }}>Admin Panel</div>
