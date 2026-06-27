@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logoImg from '/logo.svg';
+import logoImg from '../assets/logo.png';
 import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
