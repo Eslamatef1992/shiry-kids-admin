@@ -25,6 +25,7 @@ export default function CouponList() {
   const [qrSummary, setQrSummary] = useState(null);
   const [qrUploadFiles, setQrUploadFiles] = useState([]);
   const [qrLoading, setQrLoading] = useState(false);
+  const [qrSearch, setQrSearch] = useState('');
 
   const load = () => api.get('/coupons').then(r => setData(r.data.data));
   useEffect(() => {
@@ -44,6 +45,7 @@ export default function CouponList() {
   const openQrModal = (coupon) => {
     setQrCoupon(coupon);
     setQrUploadFiles([]);
+    setQrSearch('');
     setQrOpen(true);
     loadQrCodes(coupon.id);
   };
@@ -241,18 +243,51 @@ export default function CouponList() {
               </Button>
             </Space>
 
+            <Input.Search
+              placeholder="Search by phone or name..."
+              allowClear
+              value={qrSearch}
+              onChange={e => setQrSearch(e.target.value)}
+              style={{ marginBottom: 16 }}
+            />
+
             {qrItems.length === 0 ? (
               <Empty description="No QR codes uploaded yet" />
-            ) : (
+            ) : (() => {
+              const q = qrSearch.trim().toLowerCase();
+              const filtered = q
+                ? qrItems.filter(i =>
+                    i.customer_phone?.toLowerCase().includes(q) ||
+                    i.customer_name?.toLowerCase().includes(q) ||
+                    i.order_number?.toLowerCase().includes(q)
+                  )
+                : qrItems;
+              if (filtered.length === 0) return <Empty description={`No results for "${qrSearch}"`} />;
+              return (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                {qrItems.map(item => (
-                  <div key={item.id} style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: 8, width: 130, textAlign: 'center' }}>
-                    <Image src={`${BASE}${item.image}`} width={110} height={110} style={{ objectFit: 'contain' }} />
+                {filtered.map(item => (
+                  <div key={item.id} style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: 8, width: 150, textAlign: 'center' }}>
+                    <Image src={`${BASE}${item.image}`} width={120} height={120} style={{ objectFit: 'contain' }} />
                     <div style={{ marginTop: 6 }}>
-                      <Tag color={item.status === 'unassigned' ? 'green' : item.status === 'assigned' ? 'orange' : 'default'}>
+                      <Tag color={item.status === 'unassigned' ? 'green' : item.status === 'assigned' ? 'orange' : 'blue'}>
                         {item.status}
                       </Tag>
                     </div>
+                    {item.customer_name && (
+                      <div style={{ marginTop: 5, fontSize: 11, color: '#333', fontWeight: 600, lineHeight: 1.4 }}>
+                        {item.customer_name}
+                      </div>
+                    )}
+                    {item.customer_phone && (
+                      <div style={{ fontSize: 11, color: '#888', direction: 'ltr' }}>
+                        {item.customer_phone}
+                      </div>
+                    )}
+                    {item.order_number && (
+                      <div style={{ fontSize: 10, color: '#aaa', marginTop: 2 }}>
+                        {item.order_number}
+                      </div>
+                    )}
                     {item.status === 'unassigned' && (
                       <Popconfirm title={t('delete') + '?'} onConfirm={() => deleteQrCode(item.id)}>
                         <Button icon={<DeleteOutlined />} size="small" danger style={{ marginTop: 6 }} />
@@ -261,7 +296,8 @@ export default function CouponList() {
                   </div>
                 ))}
               </div>
-            )}
+              );
+            })()}
           </>
         )}
       </Modal>
