@@ -182,6 +182,16 @@ export default function CouponList() {
           <Form.Item name="expiry_date" label="Expiry Date">
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
+
+          <Space wrap>
+            <Form.Item name="lat" label="Latitude">
+              <InputNumber style={{ width: 180 }} step={0.0000001} placeholder="e.g. 29.3759" />
+            </Form.Item>
+            <Form.Item name="lng" label="Longitude">
+              <InputNumber style={{ width: 180 }} step={0.0000001} placeholder="e.g. 47.9774" />
+            </Form.Item>
+          </Space>
+
           <Space>
             <Form.Item name="status" label={t('status')}>
               <Select style={{ width: 120 }} options={[
