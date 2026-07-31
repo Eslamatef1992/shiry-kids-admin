@@ -10,9 +10,17 @@ export default function GuestOrderList() {
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState({});
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 20, total: 0 });
 
-  const load = () => api.get('/admin/orders/guest', { params: filters }).then(r => setData(r.data.data));
-  useEffect(() => { load(); }, [filters]);
+  const load = (page = 1, pageSize = 20) => {
+    api.get('/admin/orders/guest', { params: { ...filters, page, limit: pageSize } })
+      .then(r => {
+        setData(r.data.data);
+        const meta = r.data.meta;
+        if (meta) setPagination(p => ({ ...p, current: page, pageSize, total: meta.total }));
+      });
+  };
+  useEffect(() => { load(1, pagination.pageSize); }, [filters]);
 
   const updateStatus = async (id, field, val) => {
     await api.patch(`/admin/orders/${id}?type=guest`, { [field]: val });
@@ -46,7 +54,20 @@ export default function GuestOrderList() {
         <Select placeholder="Order Status" allowClear style={{width:160}} onChange={v => setFilters(f=>({...f,order_status:v}))}
           options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
       </div>
-      <Table dataSource={data} columns={cols} rowKey="id" />
+      <Table
+        dataSource={data}
+        columns={cols}
+        rowKey="id"
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50', '100'],
+          showTotal: (total) => `Total ${total} orders`,
+          onChange: (page, pageSize) => load(page, pageSize),
+        }}
+      />
       <Modal title={`Guest Order ${selected?.order_number}`} open={!!selected} onCancel={() => setSelected(null)} footer={null} width={560}>
         {selected && (
           <Descriptions bordered column={2} size="small">

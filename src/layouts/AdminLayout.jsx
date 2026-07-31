@@ -7,7 +7,7 @@ import {
   SettingOutlined, GlobalOutlined, FileTextOutlined, LogoutOutlined,
   SafetyOutlined, UsergroupAddOutlined, PercentageOutlined,
   AppstoreOutlined, PictureOutlined, BellOutlined, SearchOutlined,
-  NotificationOutlined, LayoutOutlined,
+  NotificationOutlined, LayoutOutlined, BarChartOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
@@ -50,6 +50,7 @@ export default function AdminLayout() {
     { key: 'orders-section', label: t('orders'), type: 'group', children: [
       { key: '/orders', icon: <ShoppingCartOutlined />, label: t('orders') },
       { key: '/guest-orders', icon: <UsergroupAddOutlined />, label: t('guestOrders') },
+      { key: '/reports', icon: <BarChartOutlined />, label: 'Reports' },
     ]},
     { key: 'scanner-section', label: t('mobile'), type: 'group', children: [
       { key: '/qr-scanner', icon: <QrcodeOutlined />, label: t('qrScanner') },

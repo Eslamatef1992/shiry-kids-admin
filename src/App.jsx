@@ -24,6 +24,7 @@ import AdList from './pages/ads/AdList';
 import NotificationList from './pages/notifications/NotificationList';
 import LandingPage from './pages/landingPage/LandingPage';
 import QrGenerator from './pages/qrGenerator/QrGenerator';
+import ReportsPage from './pages/reports/ReportsPage';
 
 const Protected = ({ children }) => {
   const { admin, loading } = useAuth();
@@ -76,6 +77,7 @@ export default function App() {
             <Route path="cms" element={<RequirePermission><CmsList /></RequirePermission>} />
             <Route path="notifications" element={<RequirePermission><NotificationList /></RequirePermission>} />
             <Route path="landing-page" element={<RequirePermission><LandingPage /></RequirePermission>} />
+            <Route path="reports" element={<RequirePermission><ReportsPage /></RequirePermission>} />
           </Route>
         </Routes>
       </BrowserRouter>

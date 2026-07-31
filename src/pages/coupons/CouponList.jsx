@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, Select, InputNumber, Space, Popconfirm, Tag, Switch, DatePicker, Upload, message, Image, Empty } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, QrcodeOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, QrcodeOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import dayjs from 'dayjs';
 import BilingualField from '../../components/BilingualField';
@@ -26,6 +26,32 @@ export default function CouponList() {
   const [qrUploadFiles, setQrUploadFiles] = useState([]);
   const [qrLoading, setQrLoading] = useState(false);
   const [qrSearch, setQrSearch] = useState('');
+  const [qrDateRange, setQrDateRange] = useState(null);
+
+  // Upload history modal
+  const [histOpen, setHistOpen] = useState(false);
+  const [histCoupon, setHistCoupon] = useState(null);
+  const [histItems, setHistItems] = useState([]);
+  const [histLoading, setHistLoading] = useState(false);
+  const [histDate, setHistDate] = useState(null);
+  const [histStatus, setHistStatus] = useState(null);
+
+  const getItemDate = (item) => item.created_at || item.createdAt || null;
+
+  const openHistModal = (coupon) => {
+    setHistCoupon(coupon);
+    setHistDate(null);
+    setHistStatus(null);
+    setHistOpen(true);
+    setHistLoading(true);
+    api.get(`/coupons/${coupon.id}/qr-codes`)
+      .then(r => {
+        const items = [...r.data.data].sort((a, b) => new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt));
+        setHistItems(items);
+      })
+      .catch(e => message.error(e.response?.data?.message || 'Error'))
+      .finally(() => setHistLoading(false));
+  };
 
   const load = () => api.get('/coupons').then(r => setData(r.data.data));
   useEffect(() => {
@@ -46,6 +72,7 @@ export default function CouponList() {
     setQrCoupon(coupon);
     setQrUploadFiles([]);
     setQrSearch('');
+    setQrDateRange(null);
     setQrOpen(true);
     loadQrCodes(coupon.id);
   };
@@ -118,6 +145,7 @@ export default function CouponList() {
             setFileList(r.image ? [{ uid: '-1', name: 'image', status: 'done', url: `${BASE}${r.image}` }] : []);
             setOpen(true);
           }} />
+          <Button icon={<ClockCircleOutlined />} size="small" onClick={() => openHistModal(r)} title="Upload history" />
           <Popconfirm title={t('delete') + '?'} onConfirm={() => api.delete(`/coupons/${r.id}`).then(load)}>
             <Button icon={<DeleteOutlined />} size="small" danger />
           </Popconfirm>
@@ -253,26 +281,43 @@ export default function CouponList() {
               </Button>
             </Space>
 
-            <Input.Search
-              placeholder="Search by phone or name..."
-              allowClear
-              value={qrSearch}
-              onChange={e => setQrSearch(e.target.value)}
-              style={{ marginBottom: 16 }}
-            />
+            <Space wrap style={{ marginBottom: 16 }}>
+              <Input.Search
+                placeholder="Search by phone or name..."
+                allowClear
+                value={qrSearch}
+                onChange={e => setQrSearch(e.target.value)}
+                style={{ width: 240 }}
+              />
+              <DatePicker
+                value={qrDateRange}
+                onChange={v => setQrDateRange(v)}
+                placeholder="Filter by date"
+                allowClear
+              />
+            </Space>
 
             {qrItems.length === 0 ? (
               <Empty description="No QR codes uploaded yet" />
             ) : (() => {
               const q = qrSearch.trim().toLowerCase();
-              const filtered = q
-                ? qrItems.filter(i =>
-                    i.customer_phone?.toLowerCase().includes(q) ||
-                    i.customer_name?.toLowerCase().includes(q) ||
-                    i.order_number?.toLowerCase().includes(q)
-                  )
-                : qrItems;
-              if (filtered.length === 0) return <Empty description={`No results for "${qrSearch}"`} />;
+              let filtered = qrItems;
+              // When a date is selected, show only assigned QR codes for that day
+              if (qrDateRange) {
+                const from = qrDateRange.startOf('day');
+                const to = qrDateRange.endOf('day');
+                filtered = filtered.filter(i => {
+                  if (i.status === 'unassigned') return false;
+                  const d = i.assigned_at ? dayjs(i.assigned_at) : null;
+                  return d && !d.isBefore(from) && !d.isAfter(to);
+                });
+              }
+              if (q) filtered = filtered.filter(i =>
+                i.customer_phone?.toLowerCase().includes(q) ||
+                i.customer_name?.toLowerCase().includes(q) ||
+                i.order_number?.toLowerCase().includes(q)
+              );
+              if (filtered.length === 0) return <Empty description={qrDateRange ? `No assigned QR codes on ${qrDateRange.format('DD/MM/YYYY')}` : 'No results'} />;
               return (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                 {filtered.map(item => (
@@ -293,6 +338,11 @@ export default function CouponList() {
                         {item.customer_phone}
                       </div>
                     )}
+                    {item.assigned_at && (
+                      <div style={{ fontSize: 10, color: '#1677ff', marginTop: 4, fontWeight: 500 }}>
+                        {dayjs(item.assigned_at).format('DD/MM/YYYY HH:mm')}
+                      </div>
+                    )}
                     {item.order_number && (
                       <div style={{ fontSize: 10, color: '#aaa', marginTop: 2 }}>
                         {item.order_number}
@@ -310,6 +360,102 @@ export default function CouponList() {
             })()}
           </>
         )}
+      </Modal>
+
+      {/* Upload History Modal */}
+      <Modal
+        title={<span><ClockCircleOutlined style={{ marginRight: 8, color: '#1677ff' }} />Upload History — {histCoupon?.title}</span>}
+        open={histOpen}
+        onCancel={() => setHistOpen(false)}
+        footer={null}
+        width={720}
+      >
+        <Space style={{ marginBottom: 16 }}>
+          <DatePicker
+            value={histDate}
+            onChange={v => setHistDate(v)}
+            placeholder="Filter by upload date"
+            allowClear
+            style={{ width: 180 }}
+            format="DD/MM/YYYY"
+          />
+          <Select
+            value={histStatus}
+            onChange={v => setHistStatus(v)}
+            placeholder="All statuses"
+            allowClear
+            style={{ width: 150 }}
+            options={[
+              { value: 'assigned', label: 'Assigned' },
+              { value: 'unassigned', label: 'Unassigned' },
+              { value: 'used', label: 'Used' },
+            ]}
+          />
+        </Space>
+        {histLoading ? (
+          <div style={{ textAlign: 'center', padding: 40 }}>Loading...</div>
+        ) : histItems.length === 0 ? (
+          <Empty description="No QR codes uploaded yet" />
+        ) : (() => {
+          // Filter by selected date and/or status
+          let filtered = histItems;
+          if (histDate) filtered = filtered.filter(item => {
+            const d = getItemDate(item);
+            return d && dayjs(d).format('DD/MM/YYYY') === histDate.format('DD/MM/YYYY');
+          });
+          if (histStatus) filtered = filtered.filter(item => item.status === histStatus);
+
+          if (filtered.length === 0) return <Empty description="No results for the selected filters" />;
+
+          // Group by upload date
+          const groups = {};
+          filtered.forEach(item => {
+            const d = getItemDate(item);
+            const dateKey = d ? dayjs(d).format('DD/MM/YYYY') : 'Unknown date';
+            if (!groups[dateKey]) groups[dateKey] = [];
+            groups[dateKey].push(item);
+          });
+
+          return Object.entries(groups).map(([date, items]) => (
+            <div key={date} style={{ marginBottom: 24 }}>
+              <div style={{
+                fontWeight: 700, fontSize: 13, color: '#1677ff',
+                borderBottom: '1px solid #e8f0fe', paddingBottom: 6, marginBottom: 12,
+                display: 'flex', alignItems: 'center', gap: 8,
+              }}>
+                <ClockCircleOutlined />
+                {date}
+                <Tag color="blue" style={{ marginLeft: 4 }}>{items.length} uploaded</Tag>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                {items.map(item => {
+                  const d = getItemDate(item);
+                  return (
+                    <div key={item.id} style={{
+                      border: '1px solid #f0f0f0', borderRadius: 8, padding: 8,
+                      width: 130, textAlign: 'center', background: '#fafafa',
+                    }}>
+                      <Image src={`${BASE}${item.image}`} width={100} height={100} style={{ objectFit: 'contain' }} />
+                      <div style={{ marginTop: 6 }}>
+                        <Tag color={item.status === 'unassigned' ? 'green' : item.status === 'assigned' ? 'orange' : 'blue'} style={{ fontSize: 10 }}>
+                          {item.status}
+                        </Tag>
+                      </div>
+                      <div style={{ fontSize: 10, color: '#999', marginTop: 4 }}>
+                        {d ? dayjs(d).format('HH:mm') : '—'}
+                      </div>
+                      {item.customer_name && (
+                        <div style={{ fontSize: 10, color: '#555', fontWeight: 600, marginTop: 2 }}>
+                          {item.customer_name}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ));
+        })()}
       </Modal>
     </div>
   );
