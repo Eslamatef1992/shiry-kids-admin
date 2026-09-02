@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLang } from '../../contexts/LangContext';
 import api from '../../api/axios';
 
 export default function QrBatchPage() {
-  const { t } = useTranslation();
+  const { t } = useLang();
   const [batches, setBatches]         = useState([]);
   const [loading, setLoading]         = useState(true);
   const [showModal, setShowModal]     = useState(false);
