@@ -25,6 +25,7 @@ import NotificationList from './pages/notifications/NotificationList';
 import LandingPage from './pages/landingPage/LandingPage';
 import QrGenerator from './pages/qrGenerator/QrGenerator';
 import ReportsPage from './pages/reports/ReportsPage';
+import QrBatchPage from './pages/qrBatch/QrBatchPage';
 
 const Protected = ({ children }) => {
   const { admin, loading } = useAuth();
@@ -78,6 +79,7 @@ export default function App() {
             <Route path="notifications" element={<RequirePermission><NotificationList /></RequirePermission>} />
             <Route path="landing-page" element={<RequirePermission><LandingPage /></RequirePermission>} />
             <Route path="reports" element={<RequirePermission><ReportsPage /></RequirePermission>} />
+            <Route path="qr-batch" element={<RequirePermission><QrBatchPage /></RequirePermission>} />
           </Route>
         </Routes>
       </BrowserRouter>

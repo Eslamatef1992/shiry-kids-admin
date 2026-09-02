@@ -55,6 +55,7 @@ export default function AdminLayout() {
     { key: 'scanner-section', label: t('mobile'), type: 'group', children: [
       { key: '/qr-scanner', icon: <QrcodeOutlined />, label: t('qrScanner') },
       { key: '/qr-generator', icon: <QrcodeOutlined />, label: t('qrGenerator') },
+      { key: '/qr-batch',     icon: <QrcodeOutlined />, label: 'Make QR Code' },
     ]},
     { key: 'system-section', label: t('system'), type: 'group', children: [
       { key: '/settings', icon: <SettingOutlined />, label: t('settings') },
