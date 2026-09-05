@@ -9,6 +9,7 @@ export default function QrBatchPage() {
   const [showModal, setShowModal]     = useState(false);
   const [form, setForm]               = useState({ prefix: '', quantity: '' });
   const [vendorLogo, setVendorLogo]   = useState(null);
+  const [shiryLogo, setShiryLogo]     = useState(null);
   const [saving, setSaving]           = useState(false);
   const [downloading, setDownloading] = useState(null);
   const [error, setError]             = useState('');
@@ -39,10 +40,12 @@ export default function QrBatchPage() {
       fd.append('prefix', form.prefix.trim());
       fd.append('quantity', parseInt(form.quantity));
       if (vendorLogo) fd.append('vendor_logo', vendorLogo);
+      if (shiryLogo)  fd.append('shiry_logo',  shiryLogo);
       await api.post('/qr-batches', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       setShowModal(false);
       setForm({ prefix: '', quantity: '' });
       setVendorLogo(null);
+      setShiryLogo(null);
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Error creating batch');
@@ -146,11 +149,27 @@ export default function QrBatchPage() {
                 onChange={e => setVendorLogo(e.target.files[0] || null)}
                 style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
               {vendorLogo && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 12, color: '#555' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 12, color: '#555' }}>
                   <img src={URL.createObjectURL(vendorLogo)} alt="vendor logo preview"
                     style={{ height: 48, objectFit: 'contain', borderRadius: 6, border: '1px solid #eee', background: '#f9f9f9' }} />
                   <span>{vendorLogo.name}</span>
                   <button type="button" onClick={() => setVendorLogo(null)}
+                    style={{ marginRight: 'auto', background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
+                </div>
+              )}
+
+              <label style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13, marginTop: 8 }}>
+                {t('shiryLogo', 'شعار شيري (اختياري)')}
+              </label>
+              <input type="file" accept="image/*"
+                onChange={e => setShiryLogo(e.target.files[0] || null)}
+                style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
+              {shiryLogo && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 12, color: '#555' }}>
+                  <img src={URL.createObjectURL(shiryLogo)} alt="shiry logo preview"
+                    style={{ height: 48, objectFit: 'contain', borderRadius: 6, border: '1px solid #eee', background: '#f9f9f9' }} />
+                  <span>{shiryLogo.name}</span>
+                  <button type="button" onClick={() => setShiryLogo(null)}
                     style={{ marginRight: 'auto', background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
                 </div>
               )}
