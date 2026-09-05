@@ -8,6 +8,7 @@ export default function QrBatchPage() {
   const [loading, setLoading]         = useState(true);
   const [showModal, setShowModal]     = useState(false);
   const [form, setForm]               = useState({ prefix: '', quantity: '' });
+  const [vendorLogo, setVendorLogo]   = useState(null);
   const [saving, setSaving]           = useState(false);
   const [downloading, setDownloading] = useState(null);
   const [error, setError]             = useState('');
@@ -34,9 +35,14 @@ export default function QrBatchPage() {
     if (!form.prefix.trim() || !form.quantity) return setError(t('allFieldsRequired', 'All fields required'));
     setSaving(true);
     try {
-      await api.post('/qr-batches', { prefix: form.prefix.trim(), quantity: parseInt(form.quantity) });
+      const fd = new FormData();
+      fd.append('prefix', form.prefix.trim());
+      fd.append('quantity', parseInt(form.quantity));
+      if (vendorLogo) fd.append('vendor_logo', vendorLogo);
+      await api.post('/qr-batches', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       setShowModal(false);
       setForm({ prefix: '', quantity: '' });
+      setVendorLogo(null);
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Error creating batch');
@@ -132,6 +138,22 @@ export default function QrBatchPage() {
                 placeholder="e.g. 50"
                 style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #ddd', fontSize: 14, marginBottom: 8, boxSizing: 'border-box', direction: 'ltr' }} />
               <p style={{ margin: '0 0 16px', fontSize: 12, color: '#aaa' }}>{t('maxPerBatch')}</p>
+
+              <label style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13 }}>
+                {t('vendorLogo', 'شعار المتجر (اختياري)')}
+              </label>
+              <input type="file" accept="image/*"
+                onChange={e => setVendorLogo(e.target.files[0] || null)}
+                style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
+              {vendorLogo && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 12, color: '#555' }}>
+                  <img src={URL.createObjectURL(vendorLogo)} alt="vendor logo preview"
+                    style={{ height: 48, objectFit: 'contain', borderRadius: 6, border: '1px solid #eee', background: '#f9f9f9' }} />
+                  <span>{vendorLogo.name}</span>
+                  <button type="button" onClick={() => setVendorLogo(null)}
+                    style={{ marginRight: 'auto', background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
+                </div>
+              )}
 
               {error && <p style={{ color: '#dc2626', fontSize: 13, marginBottom: 12 }}>{error}</p>}
 
