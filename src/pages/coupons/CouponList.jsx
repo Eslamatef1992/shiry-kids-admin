@@ -14,7 +14,8 @@ export default function CouponList() {
   const [couponCategories, setCouponCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList]             = useState([]);
+  const [detailFileList, setDetailFileList] = useState([]);
   const [form] = Form.useForm();
   const { t } = useLang();
 
@@ -112,7 +113,8 @@ export default function CouponList() {
         if (k === 'expiry_date') { fd.append(k, v.toISOString()); return; }
         fd.append(k, v);
       });
-      if (fileList[0]?.originFileObj) fd.append('image', fileList[0].originFileObj);
+      if (fileList[0]?.originFileObj)       fd.append('image',        fileList[0].originFileObj);
+      if (detailFileList[0]?.originFileObj) fd.append('detail_image', detailFileList[0].originFileObj);
 
       if (editing) await api.put(`/coupons/${editing.id}`, fd);
       else await api.post('/coupons', fd);
@@ -121,6 +123,7 @@ export default function CouponList() {
       setOpen(false);
       form.resetFields();
       setFileList([]);
+      setDetailFileList([]);
       load();
     } catch (e) { message.error(e.response?.data?.message || 'Error'); }
   };
@@ -143,6 +146,7 @@ export default function CouponList() {
             setEditing(r);
             form.setFieldsValue({ ...r, expiry_date: r.expiry_date ? dayjs(r.expiry_date) : null });
             setFileList(r.image ? [{ uid: '-1', name: 'image', status: 'done', url: `${BASE}${r.image}` }] : []);
+            setDetailFileList(r.detail_image ? [{ uid: '-2', name: 'detail_image', status: 'done', url: `${BASE}${r.detail_image}` }] : []);
             setOpen(true);
           }} />
           <Button icon={<ClockCircleOutlined />} size="small" onClick={() => openHistModal(r)} title="Upload history" />
@@ -159,7 +163,7 @@ export default function CouponList() {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <h2 style={{ fontWeight: 800 }}>{t('coupons')}</h2>
         <Button type="primary" icon={<PlusOutlined />} style={{ background: '#FF383C' }}
-          onClick={() => { setEditing(null); form.resetFields(); setFileList([]); setOpen(true); }}>
+          onClick={() => { setEditing(null); form.resetFields(); setFileList([]); setDetailFileList([]); setOpen(true); }}>
           {t('add')} {t('coupons')}
         </Button>
       </div>
@@ -179,11 +183,22 @@ export default function CouponList() {
           <BilingualField nameEn="description" nameAr="description_ar" label={t('description')} textarea rows={2} />
           <BilingualField nameEn="terms_and_conditions" nameAr="terms_and_conditions_ar" label="Terms & Conditions" textarea rows={3} />
 
-          <Form.Item label="Coupon Image">
+          <Form.Item label="Coupon Cover Image">
             <Upload
               fileList={fileList}
               beforeUpload={() => false}
               onChange={({ fileList: fl }) => setFileList(fl.slice(-1))}
+              listType="picture"
+            >
+              <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item label="Coupon Detail Image (shown when opened)">
+            <Upload
+              fileList={detailFileList}
+              beforeUpload={() => false}
+              onChange={({ fileList: fl }) => setDetailFileList(fl.slice(-1))}
               listType="picture"
             >
               <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
