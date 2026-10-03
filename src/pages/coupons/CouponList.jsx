@@ -250,6 +250,9 @@ export default function CouponList() {
             <Form.Item name="featured" label="Best Seller Coupon" valuePropName="checked">
               <Switch />
             </Form.Item>
+            <Form.Item name="featured_home" label="Featured on Home Page" valuePropName="checked">
+              <Switch />
+            </Form.Item>
           </Space>
         </Form>
       </Modal>
