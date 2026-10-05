@@ -33,6 +33,7 @@ export default function AdminLayout() {
     { key: 'users-section', label: t('users'), type: 'group', children: [
       { key: '/users', icon: <UserOutlined />, label: t('users') },
       { key: '/vendors', icon: <ShopOutlined />, label: t('vendors') },
+      { key: '/vendor-performance', icon: <BarChartOutlined />, label: 'Vendor Performance' },
     ]},
     { key: 'catalog-section', label: t('products'), type: 'group', children: [
       { key: '/categories', icon: <AppstoreOutlined />, label: t('categories') },

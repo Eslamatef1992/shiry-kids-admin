@@ -8,6 +8,7 @@ import AdminList from './pages/admins/AdminList';
 import RoleList from './pages/roles/RoleList';
 import UserList from './pages/users/UserList';
 import VendorList from './pages/vendors/VendorList';
+import VendorPerformance from './pages/vendors/VendorPerformance';
 import ProductList from './pages/products/ProductList';
 import CouponList from './pages/coupons/CouponList';
 import CouponCategoryList from './pages/coupons/CouponCategoryList';
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="roles" element={<RequirePermission><RoleList /></RequirePermission>} />
             <Route path="users" element={<RequirePermission><UserList /></RequirePermission>} />
             <Route path="vendors" element={<RequirePermission><VendorList /></RequirePermission>} />
+            <Route path="vendor-performance" element={<RequirePermission><VendorPerformance /></RequirePermission>} />
             <Route path="categories" element={<RequirePermission><CategoryList /></RequirePermission>} />
             <Route path="banners" element={<RequirePermission><BannerList /></RequirePermission>} />
             <Route path="ads" element={<RequirePermission><AdList /></RequirePermission>} />
