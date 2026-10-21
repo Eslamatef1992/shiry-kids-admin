@@ -177,6 +177,31 @@ export default function Dashboard() {
         ))}
       </Row>
 
+      {/* Revenue breakdown section */}
+      <div style={{ marginTop: 24, marginBottom: 8 }}>
+        <h3 style={{ fontWeight: 800, fontSize: 18, margin: 0 }}>Revenue Breakdown</h3>
+      </div>
+      <Row gutter={[16, 16]}>
+        {[
+          { label: 'Overall Revenue',         value: (stats.revenue || 0),                color: '#FF383C', bg: '#FFEDEE' },
+          { label: 'Registered Revenue',      value: (stats.registeredRevenue || 0),      color: '#6C5CE7', bg: '#EEF1FF' },
+          { label: 'Guest Revenue',           value: (stats.guestRevenue || 0),           color: '#13C2C2', bg: '#E6FFFB' },
+          { label: "Today's Revenue",         value: (stats.todayRevenue || 0),           color: '#2ED573', bg: '#E8F8F0' },
+          { label: "Today's Registered Rev.", value: (stats.todayRegisteredRevenue || 0), color: '#2F54EB', bg: '#F0F5FF' },
+          { label: "Today's Guest Rev.",      value: (stats.todayGuestRevenue || 0),      color: '#D48806', bg: '#FFFBE6' },
+        ].map(c => (
+          <Col key={c.label} xs={24} sm={12} lg={4}>
+            <Card style={{ borderRadius: 14, border: 'none', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', height: '100%' }} bodyStyle={{ padding: 16 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: c.color, marginBottom: 10 }}>
+                <DollarOutlined />
+              </div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#1A1A2E' }}>KD {parseFloat(c.value).toFixed(3)}</div>
+              <div style={{ color: '#999', fontSize: 12, marginTop: 4 }}>{c.label}</div>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
       {/* Chart + donut */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={16}>
