@@ -97,6 +97,11 @@ export default function Dashboard() {
       icon: <TeamOutlined />, bg: '#F0F5FF', color: '#2F54EB',
     },
     {
+      title: 'Guest Orders Revenue',
+      value: `KD ${parseFloat(stats.guestRevenue || 0).toFixed(3)}`,
+      icon: <DollarOutlined />, bg: '#E6FFFB', color: '#13C2C2',
+    },
+    {
       title: 'Today\'s Orders',
       value: (stats.todayOrders || 0).toLocaleString(),
       icon: <CalendarOutlined />, bg: '#FFFBE6', color: '#D48806',
