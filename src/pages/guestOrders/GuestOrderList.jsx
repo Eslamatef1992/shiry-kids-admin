@@ -31,6 +31,13 @@ export default function GuestOrderList() {
     { title: t('orderNumber'), dataIndex: 'order_number', render: n => <strong>{n}</strong> },
     { title: 'Guest Name', dataIndex: 'name' },
     { title: 'Phone', dataIndex: 'phone' },
+    {
+      title: 'Vendor',
+      render: (_, r) => {
+        const vendors = [...new Set((r.items || []).map(i => i.vendor_name).filter(Boolean))];
+        return vendors.length ? vendors.join(', ') : '-';
+      },
+    },
     { title: t('total'), dataIndex: 'total', render: t => `${t} KD` },
     { title: 'Pay Status', dataIndex: 'payment_status', render: s => <Tag color={s==='paid'?'green':s==='pending'?'orange':'red'}>{s}</Tag> },
     { title: t('orderStatus'), dataIndex: 'order_status', render: (s, r) => (
