@@ -12,11 +12,16 @@ export default function BannerList() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [fileList, setFileList] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const [form] = Form.useForm();
   const { t } = useLang();
 
   const load = () => api.get('/banners').then(r => setData(r.data.data));
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    api.get('/coupons', { params: { limit: 300, status: 'active' } })
+      .then(r => setCoupons(r.data.data || []));
+  }, []);
 
   const save = async (vals) => {
     try {
@@ -44,7 +49,19 @@ export default function BannerList() {
     },
     { title: 'Title (EN)', dataIndex: 'title', render: v => v || '—' },
     { title: 'Title (AR)', dataIndex: 'title_ar', render: v => <span dir="rtl">{v || '—'}</span> },
-    { title: 'Link', dataIndex: 'link', render: v => v ? <a href={v} target="_blank" rel="noreferrer">{v}</a> : '—' },
+    {
+      title: 'Coupon Link',
+      dataIndex: 'link',
+      render: v => {
+        if (!v) return '—';
+        const match = v.match(/shirykidsfun:\/\/coupon\/(\d+)/);
+        if (match) {
+          const coupon = coupons.find(c => String(c.id) === match[1]);
+          return <Tag color="blue">{coupon ? coupon.title : `Coupon #${match[1]}`}</Tag>;
+        }
+        return <a href={v} target="_blank" rel="noreferrer">{v}</a>;
+      },
+    },
     { title: 'Sort', dataIndex: 'sort', width: 60 },
     {
       title: t('status'), dataIndex: 'status',
@@ -95,8 +112,17 @@ export default function BannerList() {
               <Button icon={<UploadOutlined />}>{t('uploadImage')}</Button>
             </Upload>
           </Form.Item>
-          <Form.Item name="link" label="Link (optional)">
-            <Input placeholder="https://..." />
+          <Form.Item name="link" label="Coupon Link (optional)">
+            <Select
+              showSearch
+              allowClear
+              placeholder="Select a coupon to link..."
+              optionFilterProp="label"
+              options={coupons.map(c => ({
+                value: `shirykidsfun://coupon/${c.id}`,
+                label: c.title || `Coupon #${c.id}`,
+              }))}
+            />
           </Form.Item>
           <Form.Item name="status" label={t('status')} initialValue="active">
             <Select options={[{ value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' }]} />

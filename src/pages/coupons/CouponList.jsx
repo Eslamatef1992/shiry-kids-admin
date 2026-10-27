@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, Select, InputNumber, Space, Popconfirm, Tag, Switch, DatePicker, Upload, message, Image, Empty } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, QrcodeOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, useRef } from 'react';
+import { Table, Button, Modal, Form, Input, Select, InputNumber, Space, Popconfirm, Tag, Switch, DatePicker, Upload, message, Image, Empty, Alert, Tooltip } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, QrcodeOutlined, ClockCircleOutlined, FileExcelOutlined, DownloadOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import dayjs from 'dayjs';
 import BilingualField from '../../components/BilingualField';
@@ -28,6 +28,35 @@ export default function CouponList() {
   const [qrLoading, setQrLoading] = useState(false);
   const [qrSearch, setQrSearch] = useState('');
   const [qrDateRange, setQrDateRange] = useState(null);
+
+  // Bulk upload
+  const [bulkUploading, setBulkUploading] = useState(false);
+  const [bulkResult, setBulkResult]       = useState(null);
+  const bulkInputRef = useRef(null);
+
+  const handleBulkUpload = async (file) => {
+    setBulkUploading(true);
+    setBulkResult(null);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await api.post('/admin/coupons/bulk-upload', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setBulkResult(res.data);
+      if (res.data.created > 0) {
+        message.success(`${res.data.created} coupon(s) created`);
+        fetchData();
+      }
+      if (res.data.errors?.length) message.warning(`${res.data.errors.length} row(s) had errors`);
+    } catch (e) {
+      message.error(e.response?.data?.message || 'Upload failed');
+    } finally {
+      setBulkUploading(false);
+      if (bulkInputRef.current) bulkInputRef.current.value = '';
+    }
+    return false; // prevent Ant default upload
+  };
 
   // Upload history modal
   const [histOpen, setHistOpen] = useState(false);
@@ -160,13 +189,56 @@ export default function CouponList() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontWeight: 800 }}>{t('coupons')}</h2>
-        <Button type="primary" icon={<PlusOutlined />} style={{ background: '#FF383C' }}
-          onClick={() => { setEditing(null); form.resetFields(); setFileList([]); setDetailFileList([]); setOpen(true); }}>
-          {t('add')} {t('coupons')}
-        </Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <h2 style={{ fontWeight: 800, margin: 0 }}>{t('coupons')}</h2>
+        <Space>
+          {/* Bulk upload via hidden file input */}
+          <input
+            ref={bulkInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            style={{ display: 'none' }}
+            onChange={e => { if (e.target.files[0]) handleBulkUpload(e.target.files[0]); }}
+          />
+          <Tooltip title="Download Excel template">
+            <Button
+              icon={<DownloadOutlined />}
+              onClick={() => {
+                const header = 'title,title_ar,price,original_price,stock,vendor_id,description,description_ar,category,expiry_date\n';
+                const blob = new Blob([header], { type: 'text/csv' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'coupon_template.csv';
+                a.click();
+              }}
+            >
+              Template
+            </Button>
+          </Tooltip>
+          <Button
+            icon={<FileExcelOutlined />}
+            loading={bulkUploading}
+            onClick={() => bulkInputRef.current?.click()}
+          >
+            Bulk Upload
+          </Button>
+          <Button type="primary" icon={<PlusOutlined />} style={{ background: '#FF383C' }}
+            onClick={() => { setEditing(null); form.resetFields(); setFileList([]); setDetailFileList([]); setOpen(true); }}>
+            {t('add')} {t('coupons')}
+          </Button>
+        </Space>
       </div>
+      {bulkResult && bulkResult.errors?.length > 0 && (
+        <Alert
+          type="warning"
+          showIcon
+          style={{ marginBottom: 12 }}
+          message={`${bulkResult.created} created, ${bulkResult.errors.length} skipped`}
+          description={bulkResult.errors.map(e => `Row ${e.row}: ${e.reason}`).join(' | ')}
+          closable
+          onClose={() => setBulkResult(null)}
+        />
+      )}
       <Table dataSource={data} columns={cols} rowKey="id" />
       <Modal
         title={editing ? `${t('edit')} ${t('coupons')}` : `${t('add')} ${t('coupons')}`}
