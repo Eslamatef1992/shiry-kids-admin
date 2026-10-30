@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Table, Tag, Select, Space, Button, Modal, Descriptions, message } from 'antd';
-import { EyeOutlined, PrinterOutlined, FileExcelOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { Table, Tag, Select, Space, Button, Modal, Descriptions, message, Spin, Divider } from 'antd';
+import { EyeOutlined, PrinterOutlined, FileExcelOutlined, FilePdfOutlined, QrcodeOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import { printOrder } from '../../utils/printOrder';
 import { useLang } from '../../contexts/LangContext';
@@ -71,15 +71,31 @@ function exportPDF(data) {
   });
 }
 
+const BASE = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || '';
+const STATUS_TAG = { unassigned: 'default', assigned: 'blue', used: 'green' };
+
 export default function OrderList() {
   const { t } = useLang();
   const [data, setData]       = useState([]);
   const [selected, setSelected] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [filters, setFilters]  = useState({});
   const [orderTypeFilter, setOrderTypeFilter] = useState('');
 
   const load = () => api.get('/admin/orders', { params: filters }).then(r => setData(r.data.data));
   useEffect(() => { load(); }, [filters]);
+
+  const openDetail = async (row) => {
+    setSelected(row);
+    setDetailLoading(true);
+    try {
+      const type = row.is_guest ? 'guest_order' : 'order';
+      const res = await api.get(`/admin/orders/${row.id}`, { params: { type } });
+      setSelected(res.data.data);
+    } catch (_) {} finally {
+      setDetailLoading(false);
+    }
+  };
 
   const updateStatus = async (id, field, val) => {
     await api.patch(`/admin/orders/${id}`, { [field]: val });
@@ -115,7 +131,7 @@ export default function OrderList() {
     { title: 'Date', dataIndex: 'createdAt', render: d => d ? new Date(d).toLocaleString() : '-' },
     { title: '', render: (_, r) => (
       <Space>
-        <Button icon={<EyeOutlined />} size="small" onClick={() => setSelected(r)} />
+        <Button icon={<EyeOutlined />} size="small" onClick={() => openDetail(r)} />
         <Button icon={<PrinterOutlined />} size="small" onClick={() => printOrder(r)} />
       </Space>
     )},
@@ -141,23 +157,45 @@ export default function OrderList() {
         </Space>
       </div>
       <Table dataSource={filtered} columns={cols} rowKey="id" />
-      <Modal title={`Order ${selected?.order_number}`} open={!!selected} onCancel={() => setSelected(null)} footer={null} width={600}>
+      <Modal title={`Order ${selected?.order_number}`} open={!!selected} onCancel={() => setSelected(null)} footer={null} width={680}>
         {selected && (
-          <Descriptions bordered column={2} size="small">
-            <Descriptions.Item label="Customer">{selected.user?.name}</Descriptions.Item>
-            <Descriptions.Item label="Phone">{selected.user?.phone || '—'}</Descriptions.Item>
-            <Descriptions.Item label="Payment">{selected.payment_method?.toUpperCase()}</Descriptions.Item>
-            <Descriptions.Item label="Type">{getOrderType(selected.items)}</Descriptions.Item>
-            <Descriptions.Item label="Subtotal">{selected.subtotal} KD</Descriptions.Item>
-            <Descriptions.Item label="Discount">{selected.discount} KD</Descriptions.Item>
-            <Descriptions.Item label="Delivery">{selected.delivery_fees} KD</Descriptions.Item>
-            <Descriptions.Item label="Total"><strong>{selected.total} KD</strong></Descriptions.Item>
-            <Descriptions.Item label="Items" span={2}>
-              {(selected.items||[]).map((it,i) => (
-                <div key={i}>{it.name} × {it.quantity} — {it.price} KD {it.vendor_name ? `(${it.vendor_name})` : ''}</div>
-              ))}
-            </Descriptions.Item>
-          </Descriptions>
+          <Spin spinning={detailLoading}>
+            <Descriptions bordered column={2} size="small">
+              <Descriptions.Item label="Customer">{selected.user?.name || selected.name || '—'}</Descriptions.Item>
+              <Descriptions.Item label="Phone">{selected.user?.phone || selected.phone || '—'}</Descriptions.Item>
+              <Descriptions.Item label="Payment">{selected.payment_method?.toUpperCase()}</Descriptions.Item>
+              <Descriptions.Item label="Type">{getOrderType(selected.items)}</Descriptions.Item>
+              <Descriptions.Item label="Subtotal">{selected.subtotal} KD</Descriptions.Item>
+              <Descriptions.Item label="Discount">{selected.discount} KD</Descriptions.Item>
+              <Descriptions.Item label="Delivery">{selected.delivery_fees} KD</Descriptions.Item>
+              <Descriptions.Item label="Total"><strong>{selected.total} KD</strong></Descriptions.Item>
+              <Descriptions.Item label="Items" span={2}>
+                {(selected.items||[]).map((it,i) => (
+                  <div key={i}>{it.name} × {it.quantity} — {it.price} KD {it.vendor_name ? `(${it.vendor_name})` : ''}</div>
+                ))}
+              </Descriptions.Item>
+            </Descriptions>
+
+            {(selected.coupon_qr_codes?.length > 0) && (
+              <>
+                <Divider orientation="left"><QrcodeOutlined /> Assigned Coupons ({selected.coupon_qr_codes.length})</Divider>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                  {selected.coupon_qr_codes.map((qr, i) => (
+                    <div key={qr.id} style={{ textAlign: 'center', border: '1px solid #f0f0f0', borderRadius: 8, padding: 10, width: 130 }}>
+                      <img
+                        src={`${BASE}${qr.image}`}
+                        alt={`QR ${i+1}`}
+                        style={{ width: 100, height: 100, objectFit: 'contain' }}
+                      />
+                      <div style={{ fontSize: 11, marginTop: 4, color: '#555' }}>{qr.coupon?.title || `Coupon #${qr.coupon_id}`}</div>
+                      <div style={{ fontSize: 10, color: '#888' }}>{qr.code || '—'}</div>
+                      <Tag color={STATUS_TAG[qr.status]} style={{ marginTop: 4, fontSize: 10 }}>{qr.status}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </Spin>
         )}
       </Modal>
     </div>

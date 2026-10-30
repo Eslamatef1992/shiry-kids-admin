@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Select, Space, Button, Modal, Descriptions, message } from 'antd';
-import { EyeOutlined, PrinterOutlined } from '@ant-design/icons';
+import { Table, Tag, Select, Space, Button, Modal, Descriptions, message, Spin, Divider } from 'antd';
+import { EyeOutlined, PrinterOutlined, QrcodeOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import { printOrder } from '../../utils/printOrder';
 import { useLang } from '../../contexts/LangContext';
+
+const BASE = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || '';
+const STATUS_TAG = { unassigned: 'default', assigned: 'blue', used: 'green' };
 
 export default function GuestOrderList() {
   const { t } = useLang();
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [filters, setFilters] = useState({});
   const [pagination, setPagination] = useState({ current: 1, pageSize: 20, total: 0 });
 
@@ -25,6 +29,17 @@ export default function GuestOrderList() {
   const updateStatus = async (id, field, val) => {
     await api.patch(`/admin/orders/${id}?type=guest`, { [field]: val });
     message.success('Updated'); load();
+  };
+
+  const openDetail = async (row) => {
+    setSelected(row);
+    setDetailLoading(true);
+    try {
+      const res = await api.get(`/admin/orders/${row.id}`, { params: { type: 'guest_order' } });
+      setSelected(res.data.data);
+    } catch (_) {} finally {
+      setDetailLoading(false);
+    }
   };
 
   const cols = [
@@ -48,7 +63,7 @@ export default function GuestOrderList() {
     { title: 'Date', dataIndex: 'createdAt', render: d => d ? new Date(d).toLocaleString() : '-' },
     { title: '', render: (_, r) => (
       <Space>
-        <Button icon={<EyeOutlined />} size="small" onClick={() => setSelected(r)} />
+        <Button icon={<EyeOutlined />} size="small" onClick={() => openDetail(r)} />
         <Button icon={<PrinterOutlined />} size="small" onClick={() => printOrder(r, { guest: true })} />
       </Space>
     ) },
@@ -75,18 +90,40 @@ export default function GuestOrderList() {
           onChange: (page, pageSize) => load(page, pageSize),
         }}
       />
-      <Modal title={`Guest Order ${selected?.order_number}`} open={!!selected} onCancel={() => setSelected(null)} footer={null} width={560}>
+      <Modal title={`Guest Order ${selected?.order_number}`} open={!!selected} onCancel={() => setSelected(null)} footer={null} width={680}>
         {selected && (
-          <Descriptions bordered column={2} size="small">
-            <Descriptions.Item label="Name">{selected.name}</Descriptions.Item>
-            <Descriptions.Item label="Phone">{selected.phone}</Descriptions.Item>
-            <Descriptions.Item label="Address" span={2}>{selected.address}</Descriptions.Item>
-            <Descriptions.Item label="Subtotal">{selected.subtotal} KD</Descriptions.Item>
-            <Descriptions.Item label="Total"><strong>{selected.total} KD</strong></Descriptions.Item>
-            <Descriptions.Item label="Items" span={2}>
-              {(selected.items||[]).map((it,i) => <div key={i}>{it.name} × {it.quantity} — {it.price} KD</div>)}
-            </Descriptions.Item>
-          </Descriptions>
+          <Spin spinning={detailLoading}>
+            <Descriptions bordered column={2} size="small">
+              <Descriptions.Item label="Name">{selected.name}</Descriptions.Item>
+              <Descriptions.Item label="Phone">{selected.phone}</Descriptions.Item>
+              <Descriptions.Item label="Address" span={2}>{selected.address}</Descriptions.Item>
+              <Descriptions.Item label="Subtotal">{selected.subtotal} KD</Descriptions.Item>
+              <Descriptions.Item label="Total"><strong>{selected.total} KD</strong></Descriptions.Item>
+              <Descriptions.Item label="Items" span={2}>
+                {(selected.items||[]).map((it,i) => <div key={i}>{it.name} × {it.quantity} — {it.price} KD</div>)}
+              </Descriptions.Item>
+            </Descriptions>
+
+            {(selected.coupon_qr_codes?.length > 0) && (
+              <>
+                <Divider orientation="left"><QrcodeOutlined /> Assigned Coupons ({selected.coupon_qr_codes.length})</Divider>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                  {selected.coupon_qr_codes.map((qr, i) => (
+                    <div key={qr.id} style={{ textAlign: 'center', border: '1px solid #f0f0f0', borderRadius: 8, padding: 10, width: 130 }}>
+                      <img
+                        src={`${BASE}${qr.image}`}
+                        alt={`QR ${i+1}`}
+                        style={{ width: 100, height: 100, objectFit: 'contain' }}
+                      />
+                      <div style={{ fontSize: 11, marginTop: 4, color: '#555' }}>{qr.coupon?.title || `Coupon #${qr.coupon_id}`}</div>
+                      <div style={{ fontSize: 10, color: '#888' }}>{qr.code || '—'}</div>
+                      <Tag color={STATUS_TAG[qr.status]} style={{ marginTop: 4, fontSize: 10 }}>{qr.status}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </Spin>
         )}
       </Modal>
     </div>
