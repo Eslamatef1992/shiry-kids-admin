@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Select, Space, Button, Modal, Descriptions, message, Spin, Divider } from 'antd';
-import { EyeOutlined, PrinterOutlined, QrcodeOutlined } from '@ant-design/icons';
+import { Table, Tag, Select, Space, Button, Modal, Descriptions, message, Spin, Divider, Input } from 'antd';
+import { EyeOutlined, PrinterOutlined, QrcodeOutlined, SearchOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import { printOrder } from '../../utils/printOrder';
 import { useLang } from '../../contexts/LangContext';
@@ -71,10 +71,20 @@ export default function GuestOrderList() {
 
   return (
     <div>
-      <div style={{display:'flex',justifyContent:'space-between',marginBottom:16}}>
+      <div style={{display:'flex',justifyContent:'space-between',marginBottom:16,flexWrap:'wrap',gap:8}}>
         <h2 style={{fontWeight:800}}>{t('guestOrders')}</h2>
-        <Select placeholder="Order Status" allowClear style={{width:160}} onChange={v => setFilters(f=>({...f,order_status:v}))}
-          options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
+        <Space wrap>
+          <Input.Search
+            placeholder="Search by phone or name"
+            allowClear
+            style={{width:220}}
+            prefix={<SearchOutlined />}
+            onSearch={v => { setFilters(f=>({...f, search: v||''})); load(1, pagination.pageSize); }}
+            onChange={e => !e.target.value && setFilters(f=>({...f, search:''}))}
+          />
+          <Select placeholder="Order Status" allowClear style={{width:160}} onChange={v => setFilters(f=>({...f,order_status:v}))}
+            options={['processing','shipped','arrived','cancelled'].map(x=>({value:x,label:x}))} />
+        </Space>
       </div>
       <Table
         dataSource={data}
@@ -109,15 +119,23 @@ export default function GuestOrderList() {
                 <Divider orientation="left"><QrcodeOutlined /> Assigned Coupons ({selected.coupon_qr_codes.length})</Divider>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
                   {selected.coupon_qr_codes.map((qr, i) => (
-                    <div key={qr.id} style={{ textAlign: 'center', border: '1px solid #f0f0f0', borderRadius: 8, padding: 10, width: 130 }}>
+                    <div key={qr.id} style={{ textAlign: 'center', border: '1px solid #f0f0f0', borderRadius: 8, padding: 10, width: 150 }}>
                       <img
                         src={`${BASE}${qr.image}`}
                         alt={`QR ${i+1}`}
                         style={{ width: 100, height: 100, objectFit: 'contain' }}
                       />
-                      <div style={{ fontSize: 11, marginTop: 4, color: '#555' }}>{qr.coupon?.title || `Coupon #${qr.coupon_id}`}</div>
+                      <div style={{ fontSize: 11, marginTop: 4, color: '#555', fontWeight: 600 }}>{qr.coupon?.title || `Coupon #${qr.coupon_id}`}</div>
                       <div style={{ fontSize: 10, color: '#888' }}>{qr.code || '—'}</div>
                       <Tag color={STATUS_TAG[qr.status]} style={{ marginTop: 4, fontSize: 10 }}>{qr.status}</Tag>
+                      {qr.scanned_at && (
+                        <div style={{ fontSize: 10, color: '#52c41a', marginTop: 4 }}>
+                          ✓ {new Date(qr.scanned_at).toLocaleString()}
+                        </div>
+                      )}
+                      {qr.scanned_by && (
+                        <div style={{ fontSize: 10, color: '#1890ff' }}>By: {qr.scanned_by}</div>
+                      )}
                     </div>
                   ))}
                 </div>
