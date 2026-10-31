@@ -52,6 +52,7 @@ export default function AdminLayout() {
       { key: '/orders', icon: <ShoppingCartOutlined />, label: t('orders') },
       { key: '/guest-orders', icon: <UsergroupAddOutlined />, label: t('guestOrders') },
       { key: '/reports', icon: <BarChartOutlined />, label: 'Reports' },
+      { key: '/ui-report', icon: <PictureOutlined />, label: 'UI Report' },
     ]},
     { key: 'scanner-section', label: t('mobile'), type: 'group', children: [
       { key: '/qr-scanner', icon: <QrcodeOutlined />, label: t('qrScanner') },

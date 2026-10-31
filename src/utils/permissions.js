@@ -22,6 +22,7 @@ export const PAGE_PERMISSIONS = {
   '/orders': ['manage_orders'],
   '/guest-orders': ['manage_orders'],
   '/reports': ['manage_orders', 'manage_coupons'],
+  '/ui-report': ['manage_orders', 'manage_coupons'],
   '/qr-scanner': ['scan_qr'],
   '/qr-generator': ['scan_qr'],
   '/settings': ['manage_settings'],
